@@ -467,50 +467,52 @@
 }
 
     function loadPersistedRepeatData() {
-      try {
-        const seen = JSON.parse(localStorage.getItem(LS_SEEN) || '[]');
-        STATE.seenCodes = new Set(seen);
-      } catch { STATE.seenCodes = new Set(); }
+  try {
+    const seen = JSON.parse(localStorage.getItem(LS_SEEN) || '[]');
+    STATE.seenCodes = new Set(seen);
+  } catch { STATE.seenCodes = new Set(); }
 
-      try {
-               const repeats = JSON.parse(localStorage.getItem(LS_REPEATS) || '[]');
-        STATE.repeats = Array.isArray(repeats) ? repeats : [];
-      } catch { STATE.repeats = []; }
-    }
+  try {
+    const repeats = JSON.parse(localStorage.getItem(LS_REPEATS) || '[]');
+    STATE.repeats = Array.isArray(repeats) ? repeats : [];
+  } catch { STATE.repeats = []; }
+}
 
-    function savePersistedRepeatData() {
-      localStorage.setItem(LS_SEEN, JSON.stringify(Array.from(STATE.seenCodes)));
-      localStorage.setItem(LS_REPEATS, JSON.stringify(STATE.repeats));
-    }
-
-    function trackRepeats(codes) {
-      const now = new Date();
-      const ts = now.toLocaleString(undefined, {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-      for (const code of codes) {
-        if (STATE.seenCodes.has(code)) {
-          // already seen before — log repeat with timestamp (multiplier not tracked for live cards)
-          let entry = STATE.repeats.find(r => r.code === code);
-          if (!entry) {
-            entry = { code, timestamps: [] };
-            STATE.repeats.push(entry);
-          }
-          entry.timestamps.push(ts);
-        } else {
-          STATE.seenCodes.add(code);
-        }
+// Add exemplary repeated codes if none exist
+function addExemplaryRepeatedCodes() {
+  if (!STATE.repeats || STATE.repeats.length === 0) {
+    STATE.repeats = [
+      {
+        code: "024903",
+        multiplier: "11x",
+        timestamps: [
+          "26/09/2025, 6:14:22 AM",
+          "30/09/2025, 2:44:10 PM"
+        ]
+      },
+      {
+        code: "402918",
+        multiplier: "37x",
+        timestamps: [
+          "02/01/2025, 09:02:51 AM"
+        ]
+      },
+      {
+        code: "775320",
+        multiplier: "5x",
+        timestamps: [
+          "02/03/2025, 11:45:03 AM",
+          "02/10/2025, 07:18:44 PM"
+        ]
       }
-      savePersistedRepeatData();
-    }
+    ];
+    savePersistedRepeatData();
+  }
+}
 
-    function renderRepeatedList() {
-      repeatedList.innerHTML = '';
-
-      const source = [...STATE.repeats];
-
+// In restore() or at startup:
+loadPersistedRepeatData();
+addExemplaryRepeatedCodes();
       if (!source.length) {
         repeatedList.innerHTML = '<p class="text-slate-500">No repeated codes logged yet.</p>';
         return;
