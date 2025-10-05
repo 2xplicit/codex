@@ -322,7 +322,7 @@
               </div>
 
               <!-- Actual logged repeats -->
-              <div id="repeatedList" class="p-6">
+              <!--<div id="repeatedList" class="p-6">-->
                 <p class="text-slate-500">No repeated codes logged yet.</p>
               </div>
             </div>
@@ -461,7 +461,7 @@
 
       // Only track when open
       if (isOpen()) {
-        //trackRepeats(cards.map(c => c.code));//
+        trackRepeats(cards.map(c => c.code));
       }
     }
 
