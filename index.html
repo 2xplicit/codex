@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Codex — Demo (Open 12am–9pm)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    .brand-glow { text-shadow: 0 8px 30px rgba(30, 64, 175, 0.35); }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(2, 6, 23, 0.15); }
+    .fade-in { animation: fade .35s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .container-px { padding-left: clamp(1rem, 4vw, 2rem); padding-right: clamp(1rem, 4vw, 2rem); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-white text-slate-800 min-h-screen">
+  <div class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-blue-100">
+      <div class="max-w-6xl mx-auto container-px">
+        <div class="flex items-center justify-between py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold shadow-lg">CX</div>
+            <div>
+              <h1 class="text-xl font-extrabold text-blue-700 brand-glow">Codex</h1>
+              <p class="text-xs text-slate-500 -mt-1">Demo — No real payments</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a id="toRepeated" class="hidden md:inline-flex px-3 py-2 rounded-lg border border-blue-200 text-blue-700 bg-white hover:bg-blue-50 font-semibold transition cursor-pointer">Repeated Codes</a>
+            <div id="topProfile" class="hidden md:flex items-center gap-4">
+              <div class="text-right">
+                <div id="topName" class="font-semibold"></div>
+                <div id="topBank" class="text-xs text-slate-500"></div>
+              </div>
+              <button id="logoutBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[.98] transition">
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Pill -->
+        <div class="max-w-6xl mx-auto container-px pb-4">
+          <div id="statusPill" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border bg-white">
+            <span id="statusDot" class="w-2.5 h-2.5 rounded-full"></span>
+            <span id="statusText">Checking status…</span>
+          </div>
+          <span class="ml-3 text-xs text-slate-500">Open 12:00 AM – 9:00 PM • Closed 9:00 PM – 12:00 AM</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto container-px py-8 md:py-12">
+        <!-- DEMO Warning -->
+        <div class="mb-6 md:mb-8">
+          <div class="rounded-2xl border border-blue-200 bg-blue-50/70 p-4 md:p-5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">i</div>
+              <div class="flex-1">
+                <p class="font-semibold text-blue-900">Demo only — no real payments</p>
+                <p class="text-sm text-blue-900/80 mt-1">Open daily 12:00 AM – 9:00 PM. Closed 9:00 PM – 12:00 AM.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Login -->
+        <section id="viewLogin" class="fade-in">
+          <div class="max-w-xl mx-auto bg-white/90 rounded-2xl shadow-xl border border-blue-100 p-6 md:p-8">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-blue-800">Welcome to Codex</h2>
+            <p class="text-slate-600 mt-2">Use the demo form below to continue. Please don’t enter real personal or banking details.</p>
+            <div class="mt-6 space-y-5">
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Name (Demo)</label>
+                <input id="demoName" type="text" placeholder="e.g., Jane Doe"
+                  class="w-full rounded-xl border border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 px-4 py-3 outline-none bg-white" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Bank (Demo)</label>
+                <input id="demoBank" type="text" placeholder="e.g., Demo Bank"
+                  class="w-full rounded-xl border border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 px-4 py-3 outline-none bg-white" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Account Number (Demo)</label>
+                <input id="demoAccount" type="text" inputmode="numeric" placeholder="e.g., 0123456789"
+                  class="w-full rounded-xl border border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 px-4 py-3 outline-none bg-white" />
+              </div>
+              <button id="loginBtn" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3.5 shadow-md active:scale-[.99] transition">
+                Continue (Demo)
+              </button>
+              <p class="text-xs text-slate-500">By continuing you agree this is a demo flow and no real payment is processed.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Home -->
+        <section id="viewHome" class="hidden fade-in">
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <div class="bg-white rounded-2xl border border-blue-100 shadow-md p-6 sticky top-24">
+                <h3 class="text-xl font-extrabold text-blue-800">Your Demo Profile</h3>
+                <div class="mt-4 space-y-3 text-sm">
+                  <div><span class="font-semibold text-slate-700">Name:</span> <span id="profileName" class="text-slate-700"></span></div>
+                  <div><span class="font-semibold text-slate-700">Bank:</span> <span id="profileBank" class="text-slate-700"></span></div>
+                  <div><span class="font-semibold text-slate-700">Account:</span> <span id="profileAccount" class="text-slate-700"></span></div>
+                </div>
+                <div class="mt-6 p-4 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+                  <p class="text-sm/5 opacity-90">Hours</p>
+                  <div class="mt-1 text-lg font-semibold">Open 12:00 AM – 9:00 PM daily</div>
+                  <p class="text-xs/5 mt-2 text-white/80">From 9:00 PM to 12:00 AM, codes are hidden as “———” and buying is disabled.</p>
+                </div>
+                <button id="toRepeatedMobile" class="mt-4 w-full bg-white border border-blue-200 text-blue-700 font-semibold rounded-xl py-3 hover:bg-blue-50 transition">Repeated Codes</button>
+              </div>
+            </div>
+
+            <!-- Cards -->
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl md:text-2xl font-extrabold text-slate-800">Available Demo Cards</h3>
+                <span id="holdNotice" class="text-xs md:text-sm text-slate-500">Random multipliers and 6‑digit codes</span>
+              </div>
+              <div id="cardsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Buy -->
+        <section id="viewBuy" class="hidden fade-in">
+          <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-2xl border border-blue-100 shadow-md overflow-hidden">
+              <div class="p-6 md:p-8 border-b border-blue-100">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="text-2xl font-extrabold text-blue-800">Buy Demo Card</h3>
+                    <p class="text-slate-600 mt-1">Review details below. This is a demo only.</p>
+                  </div>
+                  <button id="backToHomeFromBuy" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 active:scale-[.98] transition">
+                    Back
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-6 md:p-8 space-y-6">
+                <div class="grid md:grid-cols-2 gap-5">
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Card Code</div>
+                    <div id="buyCode" class="text-xl font-extrabold text-slate-800 mt-1 tracking-wider"></div>
+                  </div>
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Multiplier</div>
+                    <div id="buyMultiplier" class="text-xl font-extrabold text-blue-700 mt-1"></div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl border border-blue-100 p-4 bg-blue-50/60">
+                  <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">₿</div>
+                    <div class="flex-1">
+                      <p class="font-semibold text-blue-900">Send payment to the demo account below</p>
+                      <div class="grid sm:grid-cols-3 gap-3 mt-3 text-sm">
+                        <div class="bg-white rounded-lg border border-blue-100 p-3">
+                          <div class="text-slate-500">Account Name</div>
+                          <div id="payAccountName" class="font-semibold">Demo Bank</div>
+                        </div>
+                        <div class="bg-white rounded-lg border border-blue-100 p-3">
+                          <div class="text-slate-500">Account Number</div>
+                          <div class="flex items-center gap-2">
+                            <div id="payAccountNumber" class="font-semibold">0123456789</div>
+                            <button data-copy="payAccountNumber" class="copyBtn text-blue-600 hover:text-blue-800 font-semibold">Copy</button>
+                          </div>
+                        </div>
+                        <div class="bg-white rounded-lg border border-blue-100 p-3">
+                          <div class="text-slate-500">Bank</div>
+                          <div id="payBank" class="font-semibold">Demo Bank</div>
+                        </div>
+                      </div>
+                      <p class="text-xs text-blue-900/80 mt-3">Do not send real money. This is a demo.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <button id="markPaidBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3.5 active:scale-[.99] transition">
+                    Paid (Demo)
+                  </button>
+                  <button id="cancelBuyBtn" class="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 active:scale-[.99] transition">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Paid -->
+        <section id="viewPaid" class="hidden fade-in">
+          <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-2xl border border-blue-100 shadow-md overflow-hidden">
+              <div class="p-6 md:p-8 border-b border-blue-100">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="text-2xl font-extrabold text-blue-800">Payment Step (Demo)</h3>
+                    <p class="text-slate-600 mt-1">Your demo profile and purchased code are shown below.</p>
+                  </div>
+                  <button id="backToHomeFromPaid" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 active:scale-[.98] transition">
+                    Back
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-6 md:p-8 space-y-6">
+                <div class="grid md:grid-cols-3 gap-5">
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Name</div>
+                    <div id="paidName" class="text-lg font-semibold"></div>
+                  </div>
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Bank</div>
+                    <div id="paidBank" class="text-lg font-semibold"></div>
+                  </div>
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Account</div>
+                    <div id="paidAccount" class="text-lg font-semibold"></div>
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-5">
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Purchased Code</div>
+                    <div id="paidCode" class="text-xl font-extrabold tracking-wider text-slate-800"></div>
+                  </div>
+                  <div class="rounded-xl border border-blue-100 p-4">
+                    <div class="text-sm text-slate-500">Multiplier</div>
+                    <div id="paidMultiplier" class="text-xl font-extrabold text-blue-700"></div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl border border-blue-100 p-4 bg-blue-50/60">
+                  <p class="font-semibold text-blue-900">Final step (Demo):</p>
+                  <ol class="list-decimal ml-5 mt-2 space-y-2 text-slate-700">
+                    <li>Take a screenshot of your payment receipt (demo).</li>
+                    <li>Send it to the email below. You can copy it and paste in your email app.</li>
+                  </ol>
+                  <div class="mt-3 flex items-center gap-3">
+                    <div id="supportEmail" class="bg-white rounded-lg border border-blue-100 px-3 py-2 font-semibold">example123@gmail.com</div>
+                    <button data-copy="supportEmail" class="copyBtn px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[.98] transition">Copy</button>
+                  </div>
+                  <p class="text-xs text-blue-900/80 mt-3">This is a demo inbox. No actual verification occurs.</p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <button id="doneBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3.5 active:scale-[.99] transition">
+                    Done
+                  </button>
+                  <button id="goHomeBtn" class="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 active:scale-[.99] transition">
+                    Go to Home
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Repeated Codes -->
+        <section id="viewRepeated" class="hidden fade-in">
+          <div class="max-w-5xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-extrabold text-blue-800">Repeated Codes</h3>
+              <div class="flex items-center gap-2">
+                <button id="backToHomeFromRepeated" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition">Back</button>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-blue-100 shadow-md overflow-hidden">
+              <div class="p-6 border-b border-blue-100">
+                <p class="text-slate-600">This list shows any card codes that appeared more than once. Each entry includes the date, time, and year when the repeat was observed.</p>
+              </div>
+
+              <!-- Demo Examples (static, for illustration) -->
+              <div class="p-6 border-b border-blue-100 bg-blue-50/50">
+                <div class="mb-3 text-sm text-blue-900 font-semibold">Examples</div>
+                <div class="grid md:grid-cols-3 gap-4">
+                  <div class="border border-blue-100 rounded-xl p-4 bg-white">
+                    <div class="text-xs text-slate-500">Code</div>
+                    <div class="text-xl font-extrabold tracking-wider text-blue-800">123456</div>
+                    <div class="mt-2 text-xs text-slate-500">Initial multiplier</div>
+                    <div class="text-sm font-semibold text-blue-700">10x</div>
+                    <div class="mt-2 text-xs text-slate-500 mb-1">Times seen again</div>
+                    <ul class="space-y-1 text-sm text-slate-700">
+                      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>01/07/2025, 10:14:22 AM</li>
+                      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>01/12/2025, 06:32:10 PM</li>
+                    </ul>
+                  </div>
+                  <div class="border border-blue-100 rounded-xl p-4 bg-white">
+                    <div class="text-xs text-slate-500">Code</div>
+                    <div class="text-xl font-extrabold tracking-wider text-blue-800">402918</div>
+                    <div class="mt-2 text-xs text-slate-500">Initial multiplier</div>
+                    <div class="text-sm font-semibold text-blue-700">37x</div>
+                    <div class="mt-2 text-xs text-slate-500 mb-1">Times seen again</div>
+                    <ul class="space-y-1 text-sm text-slate-700">
+                      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>02/01/2025, 09:02:51 AM</li>
+                    </ul>
+                  </div>
+                  <div class="border border-blue-100 rounded-xl p-4 bg-white">
+                    <div class="text-xs text-slate-500">Code</div>
+                    <div class="text-xl font-extrabold tracking-wider text-blue-800">775320</div>
+                    <div class="mt-2 text-xs text-slate-500">Initial multiplier</div>
+                    <div class="text-sm font-semibold text-blue-700">5x</div>
+                    <div class="mt-2 text-xs text-slate-500 mb-1">Times seen again</div>
+                    <ul class="space-y-1 text-sm text-slate-700">
+                      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>02/03/2025, 11:45:03 AM</li>
+                      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>02/10/2025, 07:18:44 PM</li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="mt-3 text-xs text-slate-500">These are examples for illustration. Your actual repeated codes will appear below.</p>
+              </div>
+
+              <!-- Actual logged repeats -->
+              <div id="repeatedList" class="p-6">
+                <p class="text-slate-500">No repeated codes logged yet.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <footer class="mt-auto border-t border-blue-100 bg-white/60">
+      <div class="max-w-6xl mx-auto container-px py-5 text-sm text-slate-500">
+        Codex Demo • Blue & White • For demonstration purposes only
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Demo state
+    const STATE = {
+      user: null,
+      cards: [],
+      purchase: null,
+      demoPayment: { accountName: 'Demo Bank', accountNumber: '0123456789', bank: 'Demo Bank' },
+      supportEmail: 'example123@gmail.com',
+      seenCodes: new Set(), // track first-seen codes
+      repeats: [] // { code, multiplier?: '10x', timestamps: [strings] }
+    };
+
+    // Persisted storage keys
+    const LS_SEEN = 'codex_seen_codes_v1';
+    const LS_REPEATS = 'codex_repeat_log_v1';
+
+    // Elements
+    const views = {
+      login: document.getElementById('viewLogin'),
+      home: document.getElementById('viewHome'),
+      buy: document.getElementById('viewBuy'),
+      paid: document.getElementById('viewPaid'),
+      repeated: document.getElementById('viewRepeated')
+    };
+    const topProfile = document.getElementById('topProfile');
+    const topName = document.getElementById('topName');
+    const topBank = document.getElementById('topBank');
+
+    const statusPill = document.getElementById('statusPill');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+
+    const demoName = document.getElementById('demoName');
+    const demoBank = document.getElementById('demoBank');
+    const demoAccount = document.getElementById('demoAccount');
+    const loginBtn = document.getElementById('loginBtn');
+
+    const profileName = document.getElementById('profileName');
+    const profileBank = document.getElementById('profileBank');
+    const profileAccount = document.getElementById('profileAccount');
+
+    const cardsGrid = document.getElementById('cardsGrid');
+    const holdNotice = document.getElementById('holdNotice');
+
+    const buyCode = document.getElementById('buyCode');
+    const buyMultiplier = document.getElementById('buyMultiplier');
+    const payAccountName = document.getElementById('payAccountName');
+    const payAccountNumber = document.getElementById('payAccountNumber');
+    const payBank = document.getElementById('payBank');
+    const markPaidBtn = document.getElementById('markPaidBtn');
+    const cancelBuyBtn = document.getElementById('cancelBuyBtn');
+    const backToHomeFromBuy = document.getElementById('backToHomeFromBuy');
+
+    const paidName = document.getElementById('paidName');
+    const paidBank = document.getElementById('paidBank');
+    const paidAccount = document.getElementById('paidAccount');
+    const paidCode = document.getElementById('paidCode');
+    const paidMultiplier = document.getElementById('paidMultiplier');
+    const supportEmail = document.getElementById('supportEmail');
+    const doneBtn = document.getElementById('doneBtn');
+    const goHomeBtn = document.getElementById('goHomeBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Repeated Codes page
+    const toRepeated = document.getElementById('toRepeated');
+    const toRepeatedMobile = document.getElementById('toRepeatedMobile');
+    const backToHomeFromRepeated = document.getElementById('backToHomeFromRepeated');
+    const repeatedList = document.getElementById('repeatedList');
+
+    // Utilities
+    function show(view) {
+      Object.values(views).forEach(v => v.classList.add('hidden'));
+      views[view].classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function genCode() { return String(rand(0, 999999)).padStart(6, '0'); }
+
+    // Hours logic
+    function isOpen(now = new Date()) {
+      const h = now.getHours();
+      // Open: 0:00 (inclusive) to 21:00 (exclusive)
+      return h >= 0 && h < 21;
+    }
+
+    function updateStatus() {
+      const open = isOpen();
+      if (open) {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+        statusPill.className = 'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border bg-white border-emerald-200 text-emerald-700';
+        statusText.textContent = 'Open • 12:00 AM – 9:00 PM';
+        holdNotice.textContent = 'Random multipliers and 6‑digit codes • Open now';
+        holdNotice.className = 'text-xs md:text-sm text-emerald-700';
+      } else {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+        statusPill.className = 'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border bg-white border-rose-200 text-rose-700';
+        statusText.textContent = 'Closed • 9:00 PM – 12:00 AM';
+        holdNotice.textContent = 'Closed now • Codes are hidden as “———” and buying is disabled until 12:00 AM.';
+        holdNotice.className = 'text-xs md:text-sm text-rose-700';
+      }
+    }
+
+    // Generate and track repeats
+    function generateCards() {
+  // Replace this array with your desired codes and multipliers!
+  const cards = [
+    { code: '353652', multiplier: '11x' },
+    { code: '360995', multiplier: '71x' },
+    { code: '536664', multiplier: '24x' },
+    { code: '535008', multiplier: '5x' },
+    { code: '217896', multiplier: '58x' },
+    { code: '639807', multiplier: '5x' },
+    { code: '446810', multiplier: '25x' },
+    { code: '699936', multiplier: '91x' },
+    { code: '083011', multiplier: '23x' },
+    { code: '171925', multiplier: '22x' }
+  ];
+      STATE.cards = cards;
+
+      // Only track when open
+      if (isOpen()) {
+        trackRepeats(cards.map(c => c.code));
+      }
+    }
+
+    function loadPersistedRepeatData() {
+      try {
+        const seen = JSON.parse(localStorage.getItem(LS_SEEN) || '[]');
+        STATE.seenCodes = new Set(seen);
+      } catch { STATE.seenCodes = new Set(); }
+
+      try {
+               const repeats = JSON.parse(localStorage.getItem(LS_REPEATS) || '[]');
+        STATE.repeats = Array.isArray(repeats) ? repeats : [];
+      } catch { STATE.repeats = []; }
+    }
+
+    function savePersistedRepeatData() {
+      localStorage.setItem(LS_SEEN, JSON.stringify(Array.from(STATE.seenCodes)));
+      localStorage.setItem(LS_REPEATS, JSON.stringify(STATE.repeats));
+    }
+// Manual repeat control
+function addManualRepeat(code, multiplier = '—') {
+  const now = new Date().toLocaleString(undefined, {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: true
+  });
+
+  let entry = STATE.repeats.find(r => r.code === code);
+  if (!entry) {
+    entry = { code, multiplier, timestamps: [] };
+    STATE.repeats.push(entry);
+  }
+  entry.timestamps.push(now);
+  savePersistedRepeatData();
+  renderRepeatedList();
+}
+
+
+    function renderRepeatedList() {
+      repeatedList.innerHTML = '';
+
+      const source = [...STATE.repeats];
+
+      if (!source.length) {
+        repeatedList.innerHTML = '<p class="text-slate-500">No repeated codes logged yet.</p>';
+        return;
+      }
+
+      // Sort by most recent activity
+      const sorted = source.sort((a, b) => {
+        const la = a.timestamps[a.timestamps.length - 1] || '';
+        const lb = b.timestamps[b.timestamps.length - 1] || '';
+        return lb.localeCompare(la);
+      });
+
+      const container = document.createElement('div');
+      container.className = 'grid md:grid-cols-2 gap-4';
+
+      sorted.forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'border border-blue-100 rounded-xl p-4 bg-white';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs text-slate-500">Code</div>
+              <div class="text-xl font-extrabold tracking-wider text-blue-800">${entry.code}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs text-slate-500">Repeat Count</div>
+              <div class="text-lg font-semibold text-slate-700">${entry.timestamps.length}</div>
+            </div>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs text-slate-500">Initial multiplier</div>
+            <div class="text-sm font-semibold text-blue-700">${entry.multiplier || '—'}</div>
+          </div>
+          <div class="mt-3">
+            <div class="text-xs text-slate-500 mb-1">Times seen again</div>
+            <ul class="space-y-1 text-sm text-slate-700">
+              ${entry.timestamps.map(t => `<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>${t}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      repeatedList.appendChild(container);
+    }
+
+    function renderCards() {
+      cardsGrid.innerHTML = '';
+      const open = isOpen();
+      if (!open) {
+        // Closed: show placeholders
+        for (let i = 0; i < 10; i++) {
+          const card = document.createElement('div');
+          card.className = 'w-full bg-white rounded-2xl border border-blue-100 p-5 opacity-70 cursor-not-allowed';
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-xs text-slate-500">Card Code</div>
+                <div class="text-xl font-extrabold tracking-wider text-slate-400">———</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-slate-500">Multiplier</div>
+                <div class="text-xl font-extrabold text-slate-400">———</div>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-xs text-slate-400">Closed • Demo</span>
+              <span class="inline-flex items-center gap-2 text-slate-400 font-semibold">Unavailable</span>
+            </div>
+          `;
+          cardsGrid.appendChild(card);
+        }
+        return;
+      }
+
+      // Open: show live cards
+      STATE.cards.forEach(c => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'w-full text-left bg-white rounded-2xl border border-blue-100 p-5 card-hover hover:border-blue-200';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="text-xs text-slate-500">Card Code</div>
+              <div class="text-xl font-extrabold tracking-wider text-slate-800">${c.code}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs text-slate-500">Multiplier</div>
+              <div class="text-xl font-extrabold text-blue-700">${c.multiplier}</div>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Unique • Demo</span>
+            <span class="inline-flex items-center gap-2 text-blue-700 font-semibold">Buy <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          if (!isOpen()) return;
+          startBuy(c);
+        });
+        cardsGrid.appendChild(card);
+      });
+    }
+
+    function startBuy(card) {
+      if (!isOpen()) return;
+      STATE.purchase = card;
+      payAccountName.textContent = STATE.demoPayment.accountName;
+      payAccountNumber.textContent = STATE.demoPayment.accountNumber;
+      payBank.textContent = STATE.demoPayment.bank;
+      buyCode.textContent = card.code;
+      buyMultiplier.textContent = card.multiplier;
+      show('buy');
+    }
+
+    function showPaid() {
+      if (!STATE.user || !STATE.purchase) return;
+      paidName.textContent = STATE.user.name || 'Demo User';
+      paidBank.textContent = STATE.user.bank || 'Demo Bank';
+      paidAccount.textContent = STATE.user.account || '0000000000';
+      paidCode.textContent = STATE.purchase.code;
+      paidMultiplier.textContent = STATE.purchase.multiplier;
+      supportEmail.textContent = STATE.supportEmail;
+      show('paid');
+    }
+
+    // Events
+    loginBtn.addEventListener('click', () => {
+      STATE.user = {
+        name: (demoName.value || 'Demo User').trim(),
+        bank: (demoBank.value || 'Demo Bank').trim(),
+        account: (demoAccount.value || '0000000000').trim()
+      };
+      sessionStorage.setItem('codex_demo_user', JSON.stringify(STATE.user));
+      updateTopBar();
+      if (STATE.cards.length === 0) generateCards();
+      renderCards();
+      show('home');
+      profileName.textContent = STATE.user.name;
+      profileBank.textContent = STATE.user.bank;
+      profileAccount.textContent = STATE.user.account;
+      toRepeated.classList.remove('hidden');
+      toRepeatedMobile.classList.remove('hidden');
+    });
+
+    markPaidBtn.addEventListener('click', showPaid);
+    cancelBuyBtn.addEventListener('click', () => show('home'));
+    backToHomeFromBuy.addEventListener('click', () => show('home'));
+    goHomeBtn.addEventListener('click', () => show('home'));
+    doneBtn.addEventListener('click', () => show('home'));
+    logoutBtn.addEventListener('click', () => {
+      STATE.user = null;
+      sessionStorage.removeItem('codex_demo_user');
+      updateTopBar();
+      show('login');
+    });
+
+    // Repeated navigation
+    toRepeated?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
+    toRepeatedMobile?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
+    backToHomeFromRepeated.addEventListener('click', () => show('home'));
+
+    // Status loop
+    function tick() {
+      const wasOpen = isOpen(new Date(Date.now() - 1000)); // previous moment heuristic
+      const nowOpen = isOpen();
+      updateStatus();
+      // If opening just began, regenerate cards so users see fresh set during open time
+      if (nowOpen && !wasOpen) {
+        generateCards();
+      }
+      renderCards();
+    }
+
+    function updateTopBar() {
+      if (STATE.user) {
+        topName.textContent = STATE.user.name || 'Demo User';
+        topBank.textContent = `${STATE.user.bank || 'Demo Bank'} • ${STATE.user.account || '0000000000'}`;
+        topProfile.style.display = 'flex';
+      } else {
+        topProfile.style.display = 'none';
+      }
+    }
+
+    // Restore
+    function restore() {
+      const saved = sessionStorage.getItem('codex_demo_user');
+      loadPersistedRepeatData();
+      if (saved) {
+        STATE.user = JSON.parse(saved);
+        updateTopBar();
+        profileName.textContent = STATE.user.name;
+        profileBank.textContent = STATE.user.bank;
+        profileAccount.textContent = STATE.user.account;
+        toRepeated.classList.remove('hidden');
+        toRepeatedMobile.classList.remove('hidden');
+        if (STATE.cards.length === 0) generateCards();
+        show('home');
+      } else {
+        show('login');
+      }
+      tick(); // initial
+      setInterval(tick, 30 * 1000); // refresh status/cards every 30s
+    }
+
+    // Copy buttons (delegated)
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('.copyBtn');
+      if (!target) return;
+      const id = target.getAttribute('data-copy');
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const original = target.textContent;
+        target.textContent = 'Copied!';
+        setTimeout(() => target.textContent = original, 1200);
+      });
+    });
+
+    restore();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97011a6684502a79',t:'MTc1NTM0OTEwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
