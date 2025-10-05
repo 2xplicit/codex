@@ -460,10 +460,46 @@
       STATE.cards = cards;
 
       // Only track when open
-      if (isOpen()) {
-        trackRepeats(cards.map(c => c.code));
+      function trackRepeats(codes) {
+  // Disabled automatic repeat tracking
+  // Programmer can now manage this manually
+  console.log("Automatic repeat tracking disabled.");
       }
-    }
+      const repeatedList = document.getElementById('repeatedList');
+    // Manual Repeated Code Entry Form
+const repeatedSection = document.getElementById('viewRepeated');
+const formContainer = document.createElement('div');
+formContainer.className = "p-6 border-t border-blue-100 bg-blue-50/60";
+formContainer.innerHTML = `
+  <h4 class="text-lg font-bold text-blue-800 mb-2">Add Repeated Code (Manual)</h4>
+  <div class="grid md:grid-cols-3 gap-4">
+    <input id="manualCode" type="text" placeholder="Enter 6-digit code"
+      class="border border-blue-200 rounded-lg px-3 py-2 focus:border-blue-400 outline-none" />
+    <input id="manualMultiplier" type="text" placeholder="Multiplier (e.g. 10x)"
+      class="border border-blue-200 rounded-lg px-3 py-2 focus:border-blue-400 outline-none" />
+    <button id="addRepeatBtn" class="bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold hover:bg-blue-700">Add</button>
+  </div>
+  <p class="text-xs text-slate-600 mt-2">Use this to manually record repeated codes for testing or demonstration.</p>
+`;
+repeatedSection.querySelector(".bg-white.rounded-2xl").appendChild(formContainer);
+
+// Handle manual add
+document.getElementById('addRepeatBtn').addEventListener('click', () => {
+  const code = document.getElementById('manualCode').value.trim();
+  const multiplier = document.getElementById('manualMultiplier').value.trim();
+  if (!code) return alert('Please enter a code.');
+  const now = new Date().toLocaleString();
+  let entry = STATE.repeats.find(r => r.code === code);
+  if (!entry) {
+    entry = { code, multiplier, timestamps: [] };
+    STATE.repeats.push(entry);
+  }
+  entry.timestamps.push(now);
+  savePersistedRepeatData();
+  renderRepeatedList();
+  alert(`Added repeated code ${code} successfully.`);
+});
+    
 
     function loadPersistedRepeatData() {
       try {
@@ -707,7 +743,7 @@ function addManualRepeat(code, multiplier = '—') {
         show('login');
       }
       tick(); // initial
-      setInterval(tick, 30 * 1000); // refresh status/cards every 30s
+      //setInterval(tick, 30 * 1000);// // refresh status/cards every 30s
     }
 
     // Copy buttons (delegated)
