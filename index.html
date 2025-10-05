@@ -482,36 +482,33 @@
       localStorage.setItem(LS_REPEATS, JSON.stringify(STATE.repeats));
     }
 
-    function trackRepeats(codes) {
-      const now = new Date();
-      const ts = now.toLocaleString(undefined, {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-      for (const code of codes) {
-        if (STATE.seenCodes.has(code)) {
-          // already seen before — log repeat with timestamp (multiplier not tracked for live cards)
-          let entry = STATE.repeats.find(r => r.code === code);
-          if (!entry) {
-            entry = { code, timestamps: [] };
-            STATE.repeats.push(entry);
-          }
-          entry.timestamps.push(ts);
-        } else {
-          STATE.seenCodes.add(code);
-        }
-      }
-      savePersistedRepeatData();
-    }
-
+    
     function renderRepeatedList() {
       repeatedList.innerHTML = '';
 
-      const source = [...STATE.repeats];
+      Item(LS_REPEATS, JSON.stringify(STATE.repeats));
+    }
+// Manual repeat control
+function addManualRepeat(code, multiplier = '—') {
+  const now = new Date().toLocaleString(undefined, {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: true
+  });
 
-      if (!source.length) {
-        repeatedList.innerHTML = '<p class="text-slate-500">No repeated codes logged yet.</p>';
+  let entry = STATE.repeats.find(r => r.code === code);
+  if (!entry) {
+    entry = { code, multiplier, timestamps: [] };
+    STATE.repeats.push(entry);
+  }
+  entry.timestamps.push(now);
+  savePersistedRepeatData();
+  renderRepeatedList();
+}
+
+
+    function renderRepeatedList() {
+      repeatedList.inne00">No repeated codes logged yet.</p>';
         return;
       }
 
