@@ -361,7 +361,7 @@
       home: document.getElementById('viewHome'),
       buy: document.getElementById('viewBuy'),
       paid: document.getElementById('viewPaid'),
-      repeated: document.getElementById('viewRepeated')
+      //repeated: document.getElementById('viewRepeated')
     };
     const topProfile = document.getElementById('topProfile');
     const topName = document.getElementById('topName');
@@ -481,22 +481,22 @@
       localStorage.setItem(LS_SEEN, JSON.stringify(Array.from(STATE.seenCodes)));
       localStorage.setItem(LS_REPEATS, JSON.stringify(STATE.repeats));
     }
-// Manual repeat control
-//function addManualRepeat(code, multiplier = '—') {
-  //const now = new Date().toLocaleString(undefined, {
-    //year: 'numeric', month: '2-digit', day: '2-digit',
-   // hour: '2-digit', minute: '2-digit', second: '2-digit',
-    //hour12: true
+ Manual repeat control
+function addManualRepeat(code, multiplier = '—') {
+  const now = new Date().toLocaleString(undefined, {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: true
   });
 
-  //let entry = STATE.repeats.find(r => r.code === code);
-  //if (!entry) {
-    //entry = { code, multiplier, timestamps: [] };
-    //STATE.repeats.push(entry);
+  let entry = STATE.repeats.find(r => r.code === code);
+  if (!entry) {
+    entry = { code, multiplier, timestamps: [] };
+    STATE.repeats.push(entry);
   }
-  //entry.timestamps.push(now);
-  //savePersistedRepeatData();
-  //renderRepeatedList();
+  entry.timestamps.push(now);
+  savePersistedRepeatData();
+  renderRepeatedList();
 }
 
 
