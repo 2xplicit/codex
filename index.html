@@ -489,14 +489,14 @@
     //hour12: true
   });
 
-  let entry = STATE.repeats.find(r => r.code === code);
-  if (!entry) {
-    entry = { code, multiplier, timestamps: [] };
-    STATE.repeats.push(entry);
+  //let entry = STATE.repeats.find(r => r.code === code);
+  //if (!entry) {
+    //entry = { code, multiplier, timestamps: [] };
+    //STATE.repeats.push(entry);
   }
-  entry.timestamps.push(now);
-  savePersistedRepeatData();
-  renderRepeatedList();
+  //entry.timestamps.push(now);
+  //savePersistedRepeatData();
+  //renderRepeatedList();
 }
 
 
@@ -663,9 +663,9 @@
     });
 
     // Repeated navigation
-    //toRepeated?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
-    //toRepeatedMobile?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
-    //backToHomeFromRepeated.addEventListener('click', () => show('home'));
+    toRepeated?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
+    toRepeatedMobile?.addEventListener('click', () => { renderRepeatedList(); show('repeated'); });
+    backToHomeFromRepeated.addEventListener('click', () => show('home'));
 
     // Status loop
     function tick() {
