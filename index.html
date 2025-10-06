@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Codex — Demo (Open 12am–9pm)</title>
+  <title>Codex — (Open 12am–9pm)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -63,7 +63,7 @@
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">i</div>
               <div class="flex-1">
-                <p class="font-semibold text-blue-900">Demo only — no real payments</p>
+                <p class="font-semibold text-blue-900">Codex — you're the lucky one!</p>
                 <p class="text-sm text-blue-900/80 mt-1">Open daily 12:00 AM – 9:00 PM. Closed 9:00 PM – 12:00 AM.</p>
               </div>
             </div>
@@ -571,7 +571,7 @@ function addManualRepeat(code, multiplier = '—') {
               </div>
             </div>
             <div class="mt-4 flex items-center justify-between">
-              <span class="text-xs text-slate-400">Closed • Demo</span>
+              <span class="text-xs text-slate-400">Closed • Codex</span>
               <span class="inline-flex items-center gap-2 text-slate-400 font-semibold">Unavailable</span>
             </div>
           `;
@@ -597,7 +597,7 @@ function addManualRepeat(code, multiplier = '—') {
             </div>
           </div>
           <div class="mt-4 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Unique • Demo</span>
+            <span class="text-xs text-slate-500">Unique • Codex</span>
             <span class="inline-flex items-center gap-2 text-blue-700 font-semibold">Buy <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
           </div>
         `;
@@ -634,9 +634,9 @@ function addManualRepeat(code, multiplier = '—') {
     // Events
     loginBtn.addEventListener('click', () => {
       STATE.user = {
-        name: (demoName.value || 'Demo User').trim(),
-        bank: (demoBank.value || 'Demo Bank').trim(),
-        account: (demoAccount.value || '0000000000').trim()
+        name: (demoName.value || 'Full_Name').trim(),
+        bank: (demoBank.value || 'Bank').trim(),
+        account: (demoAccount.value || '0123456789').trim()
       };
       sessionStorage.setItem('codex_demo_user', JSON.stringify(STATE.user));
       updateTopBar();
