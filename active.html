@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Exchange Dashboard</title>
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  :root {
+    --bg: #020617;
+    --card: #0F172A;
+    --card-hover: #1E293B;
+    --border: #1E293B;
+    --border-glow: #3B82F6;
+    --text: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --blue: #3B82F6;
+    --green: #10B981;
+    --red: #EF4444;
+    --purple: #8B5CF6;
+    --shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    --radius-lg: 40px;
+    --radius-md: 32px;
+    --radius-sm: 16px;
+  }
+  
+  [data-theme="light"] {
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --card-hover: #F1F5F9;
+    --border: #E2E8F0;
+    --border-glow: #3B82F6;
+    --text: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --shadow: 0 25px 50px -12px rgba(59,130,246,0.15);
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(139,92,246,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(16,185,129,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
+    min-height: 100vh;
+  }
+  
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .justify-between { justify-content: space-between; }
+  .gap-2 { gap: 0.5rem; }
+  .gap-3 { gap: 0.75rem; }
+  .gap-4 { gap: 1rem; }
+  .gap-6 { gap: 1.5rem; }
+  .grid { display: grid; }
+  .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mb-2 { margin-bottom: 0.5rem; }
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .mb-8 { margin-bottom: 2rem; }
+  .mt-1 { margin-top: 0.25rem; }
+  .pt-4 { padding-top: 1rem; }
+  .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .px-4 { padding-left: 1rem; padding-right: 1rem; }
+  .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  .text-sm { font-size: 0.875rem; }
+  .text-xl { font-size: 1.25rem; }
+  .text-3xl { font-size: 1.875rem; }
+  .font-bold { font-weight: 700; }
+  .font-semibold { font-weight: 600; }
+  .text-center { text-align: center; }
+  .absolute { position: absolute; }
+  .relative { position: relative; }
+  .inset-0 { inset: 0; }
+  .m-auto { margin: auto; }
+  .flex-1 { flex: 1 1 0%; }
+  .w-12 { width: 3rem; }
+  .h-12 { height: 3rem; }
+  .rounded-xl { border-radius: 0.75rem; }
+  .rounded-2xl { border-radius: 1rem; }
+  
+  .glass-card {
+    background: var(--card);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--radius-md);
+    padding: 1px;
+    background: conic-gradient(from var(--angle), transparent, var(--border-glow), transparent, var(--purple), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: rotate 4s linear infinite;
+  }
+  
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+  
+  .glass-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: var(--shadow);
+    background: var(--card-hover);
+  }
+  
+  .glass-card:hover::before {
+    opacity: 1;
+  }
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue);
+    transition: all 0.3s ease;
+  }
+  
+  .badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(59,130,246,0.4);
+  }
+  
+  .badge-green {
+    background: rgba(16,185,129,0.15);
+    border-color: rgba(16,185,129,0.3);
+    color: var(--green);
+  }
+  
+  .badge-red {
+    background: rgba(239,68,68,0.15);
+    border-color: rgba(239,68,68,0.3);
+    color: var(--red);
+  }
+  
+  .badge-green:hover {
+    box-shadow: 0 0 20px rgba(16,185,129,0.4);
+  }
+  
+  .badge-red:hover {
+    box-shadow: 0 0 20px rgba(239,68,68,0.4);
+  }
+  
+  .hero-number {
+    font-size: 64px;
+    line-height: 1;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .balance-number {
+    font-size: 48px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 var(--green);
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+    50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+  }
+  
+  .gain-pulse {
+    animation: gainFlash 0.6s ease;
+  }
+  
+  .loss-pulse {
+    animation: lossFlash 0.6s ease;
+  }
+  
+  @keyframes gainFlash {
+    0%, 100% { background: transparent; }
+    50% { background: rgba(16,185,129,0.2); }
+  }
+  
+  @keyframes lossFlash {
+    0%, 100% { background: transparent; }
+    50% { background: rgba(239,68,68,0.2); }
+  }
+  
+  .orbital-logo {
+    position: relative;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .orbital-ring {
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(59,130,246,0.3);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .icon-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .icon-btn:hover {
+    background: var(--card-hover);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(59,130,246,0.3);
+  }
+  
+  .icon-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    pointer-events: none;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+  
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  canvas {
+    width: 100%;
+    height: 60px;
+    display: block;
+  }
+  
+  .tooltip {
+    position: fixed;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+    box-shadow: var(--shadow);
+  }
+  
+  .tooltip.show {
+    opacity: 1;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .hero-number { font-size: 48px; }
+    .balance-number { font-size: 36px; }
+    .glass-card { padding: 24px; }
+  }
+  
+  .digit.flip {
+    animation: flip 0.3s ease;
+  }
+  
+  @keyframes flip {
+    0%, 100% { transform: rotateX(0); }
+    50% { transform: rotateX(90deg); }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<div class="container">
+  
+  <!-- Header with Theme Toggle -->
+  <header class="flex items-center justify-between mb-8 fade-up" style="animation-delay: 0ms">
+    <div class="flex items-center gap-4">
+      <div class="orbital-logo">
+        <div class="orbital-ring"></div>
+        <svg class="absolute inset-0 m-auto" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#gradient1)" opacity="0.8"/>
+          <path d="M8 12h8M12 8v8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="gradient1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#3B82F6"/>
+              <stop offset="1" stop-color="#8B5CF6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold">Codex Exchange</h1>
+        <p class="text-sm" style="color: var(--text-muted)">Real-time Dashboard</p>
+      </div>
+    </div>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="sunIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+      </svg>
+      <svg id="moonIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+        <path d="M21 12.79L11.21 3L21 12.79Z"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Active Users Hero Card -->
+  <div class="glass-card mb-6 fade-up" style="animation-delay: 150ms" role="region" aria-live="polite" aria-label="Active users statistics">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-sm font-semibold" style="color: var(--text-secondary)">Active Users</span>
+      <div class="badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"/>
+        </svg>
+        Live
+      </div>
+    </div>
+    <div class="hero-number" id="activeUsers">0</div>
+  </div>
+
+  <!-- CX Balance Card -->
+  <div class="glass-card mb-6 fade-up" style="animation-delay: 300ms" role="region" aria-label="Codex Coin balance">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(59,130,246,0.15)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12h8M12 8v8"/>
+          </svg>
+        </div>
+        <div>
+          <div class="text-sm font-semibold" style="color: var(--text-secondary)">Codex Coin Balance</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="badge">9.2M</span>
+          </div>
+        </div>
+      </div>
+    <div class="balance-number mb-2">
+      cx <span id="cxBalance">0</span>B
+    </div>
+    <div class="flex items-center gap-2 mb-4" id="cxChange">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2">
+        <path d="M22 7L13.5 15.5L8.5 10.5L2 17"/>
+      </svg>
+      <span class="font-semibold" style="color: var(--green)">+1.59$ last 24h</span>
+    </div>
+    <canvas id="cxChart" aria-label="Codex Coin 24 hour trend"></canvas>
+  </div>
+
+  <!-- Main Balance Card -->
+  <div class="glass-card mb-6 fade-up" style="animation-delay: 450ms" role="region" aria-label="Main balance">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(16,185,129,0.15)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+            <path d="M12 1v22"/>
+            <path d="M17 5H9.5V12h5V19H6"/>
+          </svg>
+        </div>
+        <div>
+          <div class="text-sm font-semibold" style="color: var(--text-secondary)">Codex Main Balance</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="badge">1.2M</span>
+          </div>
+        </div>
+      </div>
+    <div class="balance-number mb-2">
+      $<span id="mainBalance">0</span>M
+    </div>
+    <div class="flex items-center gap-2 mb-4" id="mainChange">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2">
+        <path d="M22 17L13.5 8.5L8.5 13.5L2 7"/>
+      </svg>
+      <span class="font-semibold" style="color: var(--red)">-0.23$ last 24h</span>
+    </div>
+    <canvas id="mainChart" aria-label="Main balance 24 hour sparkline"></canvas>
+  </div>
+
+  <!-- Astron Coin Card -->
+  <div class="glass-card mb-8 fade-up" style="animation-delay: 600ms" role="region" aria-label="Astron Coin wallet">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="status-dot"></div>
+        <span class="text-sm font-semibold" style="color: var(--text-secondary)">Active</span>
+      </div>
+      <div class="badge badge-green">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 6L9 17L4 12"/>
+        </svg>
+        Verified
+      </div>
+    </div>
+    
+    <div class="mb-6">
+      <div class="text-sm font-semibold mb-2" style="color: var(--text-secondary)">Wallet Address</div>
+      <div class="flex items-center gap-2">
+        <code class="mono flex-1 px-4 py-3 rounded-xl" style="background: var(--card-hover)" id="walletAddress">8d969eef6ecad3c2</code>
+        <button id="copyBtn" class="icon-btn" aria-label="Copy wallet address">
+          <svg id="copyIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13"/>
+            <path d="M5 15H4V4h9v1"/>
+          </svg>
+          <svg id="checkIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="display: none;">
+            <path d="M20 6L9 17L4 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-4">
+      <div>
+        <div class="text-sm font-semibold mb-2" style="color: var(--text-secondary)">Astron Coin</div>
+        <div class="text-3xl font-bold">Z<span id="astronBalance">0</span></div>
+      </div>
+      <div class="relative">
+        <div class="text-sm font-semibold mb-2" style="color: var(--text-secondary)">USD Value</div>
+        <div class="text-3xl font-bold" id="usdValue" style="cursor: help">$1,000</div>
+        <div class="tooltip" id="rateTooltip">1 Z = $0.10</div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 pt-4" style="border-top: 1px solid var(--border)" id="astronChange">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2">
+        <path d="M22 7L13.5 15.5L8.5 10.5L2 17"/>
+      </svg>
+      <span class="font-semibold" style="color: var(--green)">+1.32$ last 24h</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm py-6 fade-up" style="color: var(--text-muted); animation-delay: 750ms">
+    © 2026 Codex Exchange. Built on the US dollar. Secured by SHA-256.
+  </footer>
+
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast" role="alert">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2">
+    <path d="M20 6L9 17L4 12"/>
+  </svg>
+  <span>Copied to clipboard!</span>
+</div>
+
+<script>
+  // State
+  const state = {
+    activeUsers: 3856642,
+    cxBalance: 108.3,
+    mainBalance: 158.3,
+    astronBalance: 10000,
+    cxChange: 1.59,
+    mainChange: -0.23,
+    astronChange: 1.32,
+    refreshing: false
+  };
+
+  // Formatting utilities
+  const formatNumber = (num) => {
+    if (typeof num !== 'number') return '0';
+    return num.toLocaleString('en-US');
+  };
+
+  // Counter animation with null checks
+  function animateCounter(element, target, duration = 2000, decimals = 0) {
+    if (!element) return;
+    const start = 0;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      if (!element) return;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const current = start + (target - start) * easeProgress;
+      
+      element.textContent = decimals > 0 
+        ? current.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        : Math.floor(current).toLocaleString('en-US');
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+
+  // Initialize counters on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const activeUsersEl = document.getElementById('activeUsers');
+      const cxBalanceEl = document.getElementById('cxBalance');
+      const mainBalanceEl = document.getElementById('mainBalance');
+      const astronBalanceEl = document.getElementById('astronBalance');
+      
+      if (activeUsersEl) animateCounter(activeUsersEl, state.activeUsers, 2500);
+      if (cxBalanceEl) animateCounter(cxBalanceEl, state.cxBalance, 2000, 1);
+      if (mainBalanceEl) animateCounter(mainBalanceEl, state.mainBalance, 2000, 1);
+      if (astronBalanceEl) animateCounter(astronBalanceEl, state.astronBalance, 1500);
+      
+      drawSparkline('cxChart', generateSparklineData(24, true), '#3B82F6');
+      drawSparkline('mainChart', generateSparklineData(24, false), '#EF4444');
+    }, 300);
+  });
+
+  // Theme toggle with null checks
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+    
+    themeToggle.addEventListener('click', () => {
+      const body = document.body;
+      if (!body) return;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      body.setAttribute('data-theme', newTheme);
+      if (sunIcon) sunIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
+      if (moonIcon) moonIcon.style.display = newTheme === 'dark' ? 'none' : 'block';
+      
+      try {
+        localStorage.setItem('theme', newTheme);
+      } catch (e) {
+        console.error('LocalStorage not available');
+      }
+    });
+
+    // Load saved theme
+    try {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.body.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'light') {
+        if (sunIcon) sunIcon.style.display = 'none';
+        if (moonIcon) moonIcon.style.display = 'block';
+      }
+    } catch (e) {
+      console.error('LocalStorage not available');
+    }
+  }
+
+  // Copy wallet address with null checks
+  const copyBtn = document.getElementById('copyBtn');
+  if (copyBtn) {
+    const copyIcon = document.getElementById('copyIcon');
+    const checkIcon = document.getElementById('checkIcon');
+    const toast = document.getElementById('toast');
+    const walletAddressEl = document.getElementById('walletAddress');
+    const walletAddress = walletAddressEl ? walletAddressEl.textContent : '';
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(walletAddress);
+        if (copyIcon) copyIcon.style.display = 'none';
+        if (checkIcon) checkIcon.style.display = 'block';
+        if (toast) toast.classList.add('show');
+        copyBtn.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+          if (copyBtn) copyBtn.style.transform = 'scale(1)';
+        }, 100);
+        
+        setTimeout(() => {
+          if (copyIcon) copyIcon.style.display = 'block';
+          if (checkIcon) checkIcon.style.display = 'none';
+          if (toast) toast.classList.remove('show');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+  }
+
+  // USD value tooltip with null checks
+  const usdValue = document.getElementById('usdValue');
+  const rateTooltip = document.getElementById('rateTooltip');
+  
+  if (usdValue && rateTooltip) {
+    usdValue.addEventListener('mouseenter', (e) => {
+      const rect = e.target.getBoundingClientRect();
+      rateTooltip.style.left = rect.left + 'px';
+      rateTooltip.style.top = (rect.bottom + 8) + 'px';
+      rateTooltip.classList.add('show');
+    });
+    
+    usdValue.addEventListener('mouseleave', () => {
+      rateTooltip.classList.remove('show');
+    });
+  }
+
+  // Chart generation
+  function generateSparklineData(points, uptrend) {
+    const data = [];
+    let value = 100;
+    for (let i = 0; i < points; i++) {
+      value += uptrend ? (Math.random() - 0.3) * 5 : (Math.random() - 0.7) * 5;
+      data.push(Math.max(10, value));
+    }
+    return data;
+  }
+
+  function drawSparkline(canvasId, data, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = rect.height;
+    const padding = 10;
+    
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+    
+    // Gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, color + '40');
+    gradient.addColorStop(1, color + '00');
+    
+    // Draw line with animation
+    let progress = 0;
+    function animate() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      data.slice(0, Math.floor(data.length * progress)).forEach((value, i) => {
+        const x = padding + (i / (data.length - 1)) * (width - padding * 2);
+        const y = height - padding - ((value - min) / range) * (height - padding * 2);
+        
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      
+      ctx.stroke();
+      
+      // Fill area
+      if (progress >= 1) {
+        ctx.lineTo(width - padding, height - padding);
+        ctx.lineTo(padding, height - padding);
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+      
+      if (progress < 1) {
+        progress += 0.02;
+        requestAnimationFrame(animate);
+      }
+    }
+    
+    setTimeout(animate, 500);
+  }
+
+  // Live updates simulation with null checks
+  setInterval(() => {
+    if (!state.refreshing) {
+      // Active users increment
+      const increment = Math.floor(Math.random() * 5) + 1;
+      state.activeUsers += increment;
+      const usersEl = document.getElementById('activeUsers');
+      if (usersEl) {
+        usersEl.textContent = formatNumber(state.activeUsers);
+        usersEl.classList.add('flip');
+        setTimeout(() => usersEl.classList.remove('flip'), 300);
+      }
+      
+      // Random price updates every 5s
+      if (Math.random() > 0.5) {
+        const change = (Math.random() - 0.5) * 0.1;
+        state.cxChange = +(state.cxChange + change).toFixed(2);
+        const cxChangeEl = document.getElementById('cxChange');
+        if (cxChangeEl) {
+          const isPositive = state.cxChange >= 0;
+          cxChangeEl.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${isPositive ? 'var(--green)' : 'var(--red)'}" stroke-width="2">
+              <path d="${isPositive ? 'M22 7L13.5 15.5L8.5 10.5L2 17' : 'M22 17L13.5 8.5L8.5 13.5L2 7'}"/>
+            </svg>
+            <span class="font-semibold" style="color: ${isPositive ? 'var(--green)' : 'var(--red)'}">${isPositive ? '+' : ''}${state.cxChange.toFixed(2)}$ last 24h</span>
+          `;
+          cxChangeEl.classList.add(isPositive ? 'gain-pulse' : 'loss-pulse');
+          setTimeout(() => cxChangeEl.classList.remove('gain-pulse', 'loss-pulse'), 600);
+        }
+      }
+    }
+  }, 5000);
+
+  // Pull to refresh simulation
+  let startY = 0;
+  let pulling = false;
+  
+  document.addEventListener('touchstart', (e) => {
+    if (window.scrollY === 0 && e.touches && e.touches[0]) {
+      startY = e.touches[0].pageY;
+      pulling = true;
+    }
+  });
+  
+  document.addEventListener('touchmove', (e) => {
+    if (pulling && e.touches && e.touches[0] && e.touches[0].pageY - startY > 80 && !state.refreshing) {
+      refreshData();
+      pulling = false;
+    }
+  });
+  
+  document.addEventListener('touchend', () => {
+    pulling = false;
+  });
+  
+  function refreshData() {
+    state.refreshing = true;
+    console.log('Refreshing data...');
+    setTimeout(() => {
+      state.refreshing = false;
+      drawSparkline('cxChart', generateSparklineData(24, true), '#3B82F6');
+      drawSparkline('mainChart', generateSparklineData(24, false), '#EF4444');
+    }, 1500);
+  }
+
+  // 3D tilt effect on hover with null checks
+  const cards = document.querySelectorAll('.glass-card');
+  if (cards) {
+    cards.forEach(card => {
+      if (!card) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.01)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

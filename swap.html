@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Codex Exchange - Swap UI</title>
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  :root {
+    --codex-blue: #3B82F6;
+    --emerald: #10B981;
+    --purple: #8B5CF6;
+    --amber: #F59E0B;
+    --bg-dark: #020617;
+    --card-dark: #0F172A;
+    --border-dark: #1E293B;
+    --bg-light: #F8FAFC;
+    --card-light: #FFFFFF;
+    --text-dark: #E2E8F0;
+    --text-light: #0F172A;
+    color-scheme: light dark;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-dark);
+    overscroll-behavior: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  @media (prefers-color-scheme: light) {
+    body {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+  }
+  
+  .max-w-md { max-width: 28rem; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  .p-5 { padding: 1.25rem; }
+  .pb-8 { padding-bottom: 2rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-3 { margin-bottom: 0.75rem; }
+  .mb-2 { margin-bottom: 0.5rem; }
+  .mb-1 { margin-bottom: 0.25rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-3 { margin-top: 0.75rem; }
+  .mt-2 { margin-top: 0.5rem; }
+  .mt-1 { margin-top: 0.25rem; }
+  .pt-4 { padding-top: 1rem; }
+  .p-6 { padding: 1.5rem; }
+  .p-4 { padding: 1rem; }
+  .px-4 { padding-left: 1rem; padding-right: 1rem; }
+  .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+  .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .gap-4 { gap: 1rem; }
+  .gap-3 { gap: 0.75rem; }
+  .gap-2 { gap: 0.5rem; }
+  .gap-1\.5 { gap: 0.375rem; }
+  .flex { display: flex; }
+  .grid { display: grid; }
+  .hidden { display: none; }
+  .items-center { align-items: center; }
+  .items-baseline { align-items: baseline; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .flex-1 { flex: 1 1 0%; }
+  .min-w-0 { min-width: 0px; }
+  .text-center { text-align: center; }
+  .text-right { text-align: right; }
+  .text-lg { font-size: 1.125rem; }
+  .text-base { font-size: 1rem; }
+  .text-sm { font-size: 0.875rem; }
+  .text-xs { font-size: 0.75rem; }
+  .text-2xl { font-size: 1.5rem; }
+  .text-xl { font-size: 1.25rem; }
+  .font-semibold { font-weight: 600; }
+  .font-bold { font-weight: 700; }
+  .font-medium { font-weight: 500; }
+  .font-mono { font-family: ui-monospace, monospace; }
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .w-full { width: 100%; }
+  .w-12 { width: 3rem; }
+  .w-10 { width: 2.5rem; }
+  .w-4 { width: 1rem; }
+  .w-16 { width: 4rem; }
+  .w-5 { width: 1.25rem; }
+  .h-12 { height: 3rem; }
+  .h-10 { height: 2.5rem; }
+  .h-4 { height: 1rem; }
+  .h-16 { height: 4rem; }
+  .h-5 { height: 1.25rem; }
+  .h-1 { height: 0.25rem; }
+  .rounded-2xl { border-radius: 1rem; }
+  .rounded-full { border-radius: 9999px; }
+  .rounded-lg { border-radius: 0.5rem; }
+  .rounded-\[32px\] { border-radius: 32px; }
+  .rounded-\[24px\] { border-radius: 24px; }
+  .rounded-t-\[32px\] { border-top-left-radius: 32px; border-top-right-radius: 32px; }
+  .border-4 { border-width: 4px; }
+  .border-t { border-top-width: 1px; }
+  .border-slate-800 { border-color: #1e293b; }
+  .border-slate-700 { border-color: #334155; }
+  .border-slate-900 { border-color: #0f172a; }
+  .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+  .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+  .from-emerald-500 { --tw-gradient-from: #10b981; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-emerald-600 { --tw-gradient-to: #059669; }
+  .from-blue-500 { --tw-gradient-from: #3b82f6; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-purple-600 { --tw-gradient-to: #9333ea; }
+  .from-amber-400 { --tw-gradient-from: #fbbf24; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-amber-600 { --tw-gradient-to: #d97706; }
+  .from-purple-500 { --tw-gradient-from: #a855f7; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-purple-700 { --tw-gradient-to: #7e22ce; }
+  .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05); }
+  .bg-black\/20 { background-color: rgba(0, 0, 0, 0.2); }
+  .bg-black\/60 { background-color: rgba(0, 0, 0, 0.6); }
+  .bg-emerald-500 { background-color: #10b981; }
+  .bg-blue-500\/20 { background-color: rgba(59, 130, 246, 0.2); }
+  .bg-slate-700 { background-color: #334155; }
+  .bg-slate-800 { background-color: #1e293b; }
+  .bg-slate-600 { background-color: #475569; }
+  .text-white { color: #ffffff; }
+  .text-slate-400 { color: #94a3b8; }
+  .text-slate-500 { color: #64748b; }
+  .text-amber-500 { color: #f59e0b; }
+  .text-purple-500 { color: #a855f7; }
+  .text-blue-500 { color: #3b82f6; }
+  .text-emerald-500 { color: #10b981; }
+  .outline-none { outline: 2px solid transparent; outline-offset: 2px; }
+  .bg-transparent { background-color: transparent; }
+  .cursor-not-allowed { cursor: not-allowed; }
+  .opacity-40 { opacity: 0.4; }
+  .transition-opacity { transition-property: opacity; transition-duration: 150ms; }
+  .fixed { position: fixed; }
+  .absolute { position: absolute; }
+  .relative { position: relative; }
+  .inset-0 { top: 0px; right: 0px; bottom: 0px; left: 0px; }
+  .top-5 { top: 1.25rem; }
+  .left-1\/2 { left: 50%; }
+  .-translate-x-1\/2 { transform: translateX(-50%); }
+  .bottom-0 { bottom: 0px; }
+  .left-0 { left: 0px; }
+  .right-0 { right: 0px; }
+  .-top-1 { top: -0.25rem; }
+  .-right-1 { right: -0.25rem; }
+  .-my-3 { margin-top: -0.75rem; margin-bottom: -0.75rem; }
+  .z-10 { z-index: 10; }
+  .z-50 { z-index: 50; }
+  .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+  .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+  .overflow-hidden { overflow: hidden; }
+  .backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  
+  @media (prefers-color-scheme: light) {
+    .light\:bg-slate-50 { background-color: #f8fafc; }
+    .light\:bg-slate-100 { background-color: #f1f5f9; }
+    .light\:bg-slate-200 { background-color: #e2e8f0; }
+    .light\:bg-white { background-color: #ffffff; }
+    .light\:border-slate-50 { border-color: #f8fafc; }
+    .light\:border-slate-200 { border-color: #e2e8f0; }
+    .dark\:bg-black\/20 { background-color: rgba(0, 0, 0, 0.2); }
+    .dark\:bg-slate-800 { background-color: #1e293b; }
+    .dark\:border-slate-800 { border-color: #1e293b; }
+    .dark\:border-slate-900 { border-color: #0f172a; }
+    .dark\:text-slate-500 { color: #64748b; }
+    .dark\:bg-white\/5 { background-color: rgba(255, 255, 255, 0.05); }
+    .dark\:bg-slate-800 { background-color: #1e293b; }
+  }
+  
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(30, 41, 59, 0.5);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+  }
+  
+  .gradient-border {
+    position: relative;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), var(--codex-blue), var(--emerald), var(--purple), var(--codex-blue));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 4s linear infinite;
+  }
+  
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+  
+  .touch-target {
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-scale {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .btn-scale:active {
+    transform: scale(0.95);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .btn-scale:active, .gradient-border::before {
+      transform: none;
+      animation: none;
+    }
+  }
+  
+  .key-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .key-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+  }
+  
+  .key-ripple:active::after {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .amount-input {
+    font-size: 64px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    caret-color: var(--codex-blue);
+  }
+  
+  .amount-input.shake {
+    animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  .swap-arrows {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+  }
+  
+  .swap-arrows.rotate {
+    transform: rotate(180deg);
+  }
+  
+  .swap-arrows.glow {
+    filter: drop-shadow(0 0 12px var(--codex-blue));
+  }
+  
+  .slide-up {
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .slide-right {
+    animation: slideRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slideRight {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  .pulse-emerald {
+    animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  }
+  
+  .spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .verified-badge {
+    position: relative;
+  }
+  
+  .verified-badge::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--emerald);
+    border: 2px solid var(--card-dark);
+    border-radius: 50%;
+  }
+  
+  @media (prefers-color-scheme: light) {
+    .verified-badge::after {
+      border-color: var(--card-light);
+    }
+  }
+  
+  .toast-enter {
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes toastIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--codex-blue);
+    animation: confettiFall 3s ease-out forwards;
+  }
+  
+  @keyframes confettiFall {
+    to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  
+  .count-up {
+    transition: color 0.3s;
+  }
+  
+  [aria-live] {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body class="min-h-screen">
+  <div class="max-w-md mx-auto p-5 pb-8 slide-right">
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+      <button id="backBtn" class="touch-target glass rounded-2xl btn-scale" aria-label="Go back" onclick="window.location.href='home.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18L9 12L15 6"></path>
+        </svg>
+      </button>
+      <h1 class="text-lg font-semibold">Swap</h1>
+      <button id="swapHeaderBtn" class="touch-target px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-2xl font-semibold text-sm btn-scale pulse-emerald">
+        Swap
+      </button>
+    </header>
+
+    <!-- User Card -->
+    <div class="glass rounded-[32px] p-6 mb-4 gradient-border">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg verified-badge">
+          GD
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <p class="text-sm font-medium truncate">Georgedawson@gmail.com</p>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--emerald)">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <button id="copyWallet" class="flex items-center gap-1.5 mt-1 btn-scale" aria-label="Copy wallet address">
+            <p class="text-xs font-mono text-slate-400 dark:text-slate-500">8d969eef6ecad3c2</p>
+            <svg id="copyIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-500">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Swap Interface -->
+    <div class="glass rounded-[32px] p-6 mb-4 relative">
+      <!-- From -->
+      <div class="mb-2">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm text-slate-400 dark:text-slate-500">From</span>
+          <span class="text-xs text-slate-500">Balance: <span id="bitroBalance">1,568</span></span>
+        </div>
+        <div class="flex items-center gap-3 p-4 rounded-2xl bg-black/20 dark:bg-black/20 light:bg-slate-50">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+              <span class="text-white font-bold text-sm">B</span>
+            </div>
+            <div class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <path d="M5 13L9 17L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-base">Bitro</p>
+            <p class="text-xs text-amber-500 font-medium">Verified</p>
+          </div>
+          <button id="maxBtn" class="px-3 py-1.5 bg-blue-500/20 text-blue-500 rounded-lg text-xs font-semibold btn-scale">MAX</button>
+        </div>
+      </div>
+
+      <!-- Swap Arrows -->
+      <div class="flex justify-center -my-3 relative z-10">
+        <button id="swapArrows" class="touch-target bg-slate-800 dark:bg-slate-800 light:bg-white rounded-2xl border-4 border-slate-900 dark:border-slate-900 light:border-slate-50 btn-scale swap-arrows" aria-label="Swap direction">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--codex-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- To -->
+      <div class="mt-2">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm text-slate-400 dark:text-slate-500">To</span>
+          <span class="text-xs text-slate-500">Balance: <span id="astroBalance">3,756</span></span>
+        </div>
+        <div class="flex items-center gap-3 p-4 rounded-2xl bg-black/20 dark:bg-black/20 light:bg-slate-50">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+              <span class="text-white font-bold text-sm">A</span>
+            </div>
+            <div class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <path d="M5 13L9 17L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-base">Astro</p>
+            <p class="text-xs text-purple-500 font-medium">Verified</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exchange Rate -->
+      <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-800 dark:border-slate-800 light:border-slate-200">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6V12L16 14"></path>
+          </svg>
+          <span>1 Bitro = <span id="liveRate">2.39</span> Astro</span>
+        </div>
+        <button id="refreshRate" class="touch-target btn-scale" aria-label="Refresh rate">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2V6H17M3 12C3 7.02944 7.02944 3 12 3C16.112 3 19.5607 5.81391 20.8 9.8M3 22V18H7M12 21C7.88803 21 4.43932 18.1861 3.2 14.2"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Amount Input -->
+    <div class="glass rounded-[32px] p-6 mb-4">
+      <div class="flex items-baseline gap-2 mb-2">
+        <span class="text-sm text-slate-400 dark:text-slate-500">You pay</span>
+      </div>
+      <input 
+        id="amountInput" 
+        type="text" 
+        inputmode="decimal" 
+        placeholder="0" 
+        class="amount-input w-full bg-transparent outline-none text-center"
+        readonly
+        aria-label="Amount to swap"
+      >
+      <div class="flex items-center justify-center gap-2 mt-3 text-sm">
+        <span class="text-slate-500">You receive ≈</span>
+        <span id="receiveAmount" class="font-semibold count-up">0</span>
+        <span class="text-slate-500">Astro</span>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 space-y-2 text-xs">
+        <div class="flex justify-between text-slate-500">
+          <span>Network fee</span>
+          <span id="networkFee">~$2.40</span>
+        </div>
+        <div class="flex justify-between text-slate-500">
+          <span>Slippage</span>
+          <span id="slippage">0.5%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Numeric Keypad -->
+    <div class="glass rounded-[32px] p-4 mb-4">
+      <div class="grid grid-cols-3 gap-3">
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="1">1</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="2">2</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="3">3</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="4">4</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="5">5</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="6">6</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="7">7</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="8">8</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="9">9</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key=".">.</button>
+        <button class="keypad-btn touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 text-2xl font-semibold key-ripple btn-scale" data-key="0">0</button>
+        <button id="deleteBtn" class="touch-target rounded-2xl bg-white/5 dark:bg-white/5 light:bg-slate-100 key-ripple btn-scale" aria-label="Delete">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 5H9L3 12L9 19H20C21.1046 19 22 18.1046 22 17V7C22 5.89543 21.1046 5 20 5Z"></path>
+            <line x1="13" y1="9" x2="17" y2="13"></line>
+            <line x1="17" y1="9" x2="13" y2="13"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Send Button -->
+    <button 
+      id="sendBtn" 
+      class="w-full touch-target bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-[24px] font-semibold text-lg btn-scale disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+      disabled
+    >
+      Send To Approve
+    </button>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-3 bg-slate-800 dark:bg-slate-800 light:bg-white border border-slate-700 light:border-slate-200 rounded-2xl shadow-2xl hidden z-50">
+    <div class="flex items-center gap-2 text-sm">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--emerald)" class="text-emerald-500">
+        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span id="toastMsg">Copied!</span>
+    </div>
+  </div>
+
+  <!-- Bottom Sheet -->
+  <div id="bottomSheet" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="sheetBackdrop"></div>
+    <div class="absolute bottom-0 left-0 right-0 glass rounded-t-[32px] p-6 slide-up max-w-md mx-auto">
+      <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+      <h2 class="text-xl font-bold mb-4">Confirm Swap</h2>
+      
+      <div class="space-y-4 mb-6">
+        <div class="flex items-center justify-between p-4 rounded-2xl bg-black/20">
+          <div>
+            <p class="text-xs text-slate-500 mb-1">You pay</p>
+            <p class="text-lg font-semibold" id="confirmPay">0 Bitro</p>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--codex-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19"></path>
+          </svg>
+          <div class="text-right">
+            <p class="text-xs text-slate-500 mb-1">You receive</p>
+            <p class="text-lg font-semibold" id="confirmReceive">0 Astro</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-center py-6">
+          <div class="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--codex-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+              <path d="M2 17L12 22L22 17"></path>
+              <path d="M2 12L12 17L22 12"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <p class="text-center text-sm text-slate-400">Authenticate with Face ID</p>
+      </div>
+      
+      <div class="flex gap-3">
+        <button id="cancelBtn" class="flex-1 touch-target rounded-2xl bg-slate-700 light:bg-slate-200 font-semibold btn-scale">Cancel</button>
+        <button id="confirmBtn" class="flex-1 touch-target bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-2xl font-semibold btn-scale" onclick="window.location.href='successswap.html'">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARIA live regions -->
+  <div aria-live="polite" id="amountLive"></div>
+  <div aria-live="assertive" id="errorLive"></div>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      const state = {
+        amount: '',
+        balance: 1568,
+        rate: 2.39,
+        isSwapped: false,
+        sending: false
+      };
+
+      const getEl = function(id) { return document.getElementById(id); };
+      
+      const elements = {
+        amountInput: getEl('amountInput'),
+        receiveAmount: getEl('receiveAmount'),
+        sendBtn: getEl('sendBtn'),
+        swapArrows: getEl('swapArrows'),
+        swapHeaderBtn: getEl('swapHeaderBtn'),
+        backBtn: getEl('backBtn'),
+        maxBtn: getEl('maxBtn'),
+        deleteBtn: getEl('deleteBtn'),
+        copyWallet: getEl('copyWallet'),
+        toast: getEl('toast'),
+        toastMsg: getEl('toastMsg'),
+        bottomSheet: getEl('bottomSheet'),
+        sheetBackdrop: getEl('sheetBackdrop'),
+        cancelBtn: getEl('cancelBtn'),
+        confirmBtn: getEl('confirmBtn'),
+        refreshRate: getEl('refreshRate'),
+        liveRate: getEl('liveRate'),
+        amountLive: getEl('amountLive'),
+        errorLive: getEl('errorLive'),
+        bitroBalance: getEl('bitroBalance'),
+        astroBalance: getEl('astroBalance')
+      };
+
+      function formatNumber(num) {
+        if (!num) return '0';
+        const parts = num.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return parts.join('.');
+      }
+
+      function parseNumber(str) {
+        if (!str) return 0;
+        return parseFloat(str.toString().replace(/,/g, '')) || 0;
+      }
+
+      function updateReceiveAmount() {
+        if (!elements.receiveAmount || !elements.amountLive) return;
+        const amount = parseNumber(state.amount);
+        const receive = amount * state.rate;
+        elements.receiveAmount.textContent = formatNumber(receive.toFixed(2));
+        elements.amountLive.textContent = 'You pay ' + formatNumber(amount) + ' Bitro, receive approximately ' + formatNumber(receive.toFixed(2)) + ' Astro';
+      }
+
+      function validateAmount() {
+        const amount = parseNumber(state.amount);
+        const isValid = amount > 0 && amount <= state.balance;
+        
+        if (elements.sendBtn) {
+          elements.sendBtn.disabled = !isValid || state.sending;
+        }
+        
+        if (elements.amountInput) {
+          if (amount > state.balance) {
+            elements.amountInput.style.color = '#EF4444';
+            elements.amountInput.classList.add('shake');
+            if (elements.errorLive) elements.errorLive.textContent = 'Insufficient balance';
+            setTimeout(function() { if (elements.amountInput) elements.amountInput.classList.remove('shake'); }, 400);
+          } else {
+            elements.amountInput.style.color = '';
+            if (elements.errorLive) elements.errorLive.textContent = '';
+          }
+        }
+        
+        return isValid;
+      }
+
+      function handleKeypad(key) {
+        if (key === '.' && state.amount.indexOf('.') !== -1) return;
+        if (key === '.' && state.amount === '') state.amount = '0';
+        if (state.amount === '0' && key !== '.') state.amount = '';
+        
+        const newAmount = state.amount + key;
+        const decimalPart = newAmount.split('.')[1];
+        if (decimalPart && decimalPart.length > 8) return;
+        
+        state.amount = newAmount;
+        if (elements.amountInput) elements.amountInput.value = formatNumber(state.amount);
+        updateReceiveAmount();
+        validateAmount();
+      }
+
+      function handleDelete() {
+        state.amount = state.amount.slice(0, -1);
+        if (elements.amountInput) elements.amountInput.value = formatNumber(state.amount);
+        updateReceiveAmount();
+        validateAmount();
+      }
+
+      function handleMax() {
+        state.amount = state.balance.toString();
+        if (elements.amountInput) elements.amountInput.value = formatNumber(state.amount);
+        updateReceiveAmount();
+        validateAmount();
+      }
+
+      function showToast(msg) {
+        if (!elements.toast || !elements.toastMsg) return;
+        elements.toastMsg.textContent = msg;
+        elements.toast.classList.remove('hidden');
+        elements.toast.classList.add('toast-enter');
+        setTimeout(function() {
+          if (elements.toast) {
+            elements.toast.classList.add('hidden');
+            elements.toast.classList.remove('toast-enter');
+          }
+        }, 2000);
+      }
+
+      function copyWallet() {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText('8d969eef6ecad3c2').then(function() {
+            showToast('Wallet address copied!');
+            if (elements.copyWallet) {
+              elements.copyWallet.style.transform = 'scale(1.05)';
+              setTimeout(function() { if (elements.copyWallet) elements.copyWallet.style.transform = ''; }, 150);
+            }
+          }).catch(function() { showToast('Copy failed'); });
+        } else {
+          showToast('Copy not supported');
+        }
+      }
+
+      function handleSwapCoins() {
+        state.isSwapped = !state.isSwapped;
+        if (elements.swapArrows) {
+          elements.swapArrows.classList.add('rotate', 'glow');
+          setTimeout(function() { if (elements.swapArrows) elements.swapArrows.classList.remove('glow'); }, 400);
+        }
+        
+        if (elements.bitroBalance && elements.astroBalance) {
+          const bitroVal = elements.bitroBalance.textContent;
+          const astroVal = elements.astroBalance.textContent;
+          elements.bitroBalance.textContent = astroVal;
+          elements.astroBalance.textContent = bitroVal;
+        }
+        
+        showToast('Coins swapped');
+      }
+
+      function showBottomSheet() {
+        const confirmPay = getEl('confirmPay');
+        const confirmReceive = getEl('confirmReceive');
+        if (confirmPay) confirmPay.textContent = formatNumber(state.amount) + ' Bitro';
+        if (confirmReceive) confirmReceive.textContent = formatNumber((parseNumber(state.amount) * state.rate).toFixed(2)) + ' Astro';
+        if (elements.bottomSheet) elements.bottomSheet.classList.remove('hidden');
+      }
+
+      function hideBottomSheet() {
+        if (elements.bottomSheet) elements.bottomSheet.classList.add('hidden');
+      }
+
+      function createConfetti() {
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          const colors = ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B'];
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * 4)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+          document.body.appendChild(confetti);
+          setTimeout(function() { if (confetti.parentNode) confetti.remove(); }, 3000);
+        }
+      }
+
+      async function handleSend() {
+        if (!validateAmount() || state.sending) return;
+        showBottomSheet();
+      }
+
+      async function handleConfirm() {
+        state.sending = true;
+        if (elements.sendBtn) elements.sendBtn.disabled = true;
+        if (elements.confirmBtn) elements.confirmBtn.innerHTML = '<div class="spinner w-5 h-5 mx-auto"></div>';
+        hideBottomSheet();
+        
+        if (elements.swapHeaderBtn) {
+          elements.swapHeaderBtn.textContent = 'Processing...';
+          elements.swapHeaderBtn.classList.remove('pulse-emerald');
+        }
+        
+        await new Promise(function(resolve) { setTimeout(resolve, 2000); });
+        
+        createConfetti();
+        showToast('Swap successful!');
+        
+        if (elements.swapHeaderBtn) {
+          elements.swapHeaderBtn.textContent = 'Swap';
+          elements.swapHeaderBtn.classList.add('pulse-emerald');
+        }
+        if (elements.confirmBtn) elements.confirmBtn.textContent = 'Confirm';
+        
+        state.amount = '';
+        if (elements.amountInput) elements.amountInput.value = '';
+        updateReceiveAmount();
+        validateAmount();
+        state.sending = false;
+      }
+
+      function updateRate() {
+        const change = (Math.random() - 0.5) * 0.1;
+        state.rate = Math.max(2.0, Math.min(3.0, state.rate + change));
+        if (elements.liveRate) elements.liveRate.textContent = state.rate.toFixed(2);
+        updateReceiveAmount();
+      }
+
+      // Event listeners with null checks
+      const keypadBtns = document.querySelectorAll('.keypad-btn');
+      if (keypadBtns) {
+        keypadBtns.forEach(function(btn) {
+          if (btn) {
+            btn.addEventListener('click', function() {
+              if (btn.dataset && btn.dataset.key) handleKeypad(btn.dataset.key);
+            });
+          }
+        });
+      }
+
+      if (elements.deleteBtn) elements.deleteBtn.addEventListener('click', handleDelete);
+      if (elements.maxBtn) elements.maxBtn.addEventListener('click', handleMax);
+      if (elements.copyWallet) elements.copyWallet.addEventListener('click', copyWallet);
+      if (elements.swapArrows) elements.swapArrows.addEventListener('click', handleSwapCoins);
+      if (elements.sendBtn) elements.sendBtn.addEventListener('click', handleSend);
+      if (elements.cancelBtn) elements.cancelBtn.addEventListener('click', hideBottomSheet);
+      if (elements.confirmBtn) elements.confirmBtn.addEventListener('click', handleConfirm);
+      if (elements.sheetBackdrop) elements.sheetBackdrop.addEventListener('click', hideBottomSheet);
+      if (elements.refreshRate) elements.refreshRate.addEventListener('click', updateRate);
+      if (elements.backBtn) elements.backBtn.addEventListener('click', function() { showToast('Navigating back...'); });
+      if (elements.swapHeaderBtn) elements.swapHeaderBtn.addEventListener('click', handleSend);
+
+      // Long press clear on delete
+      let longPressTimer;
+      if (elements.deleteBtn) {
+        elements.deleteBtn.addEventListener('touchstart', function() {
+          longPressTimer = setTimeout(function() {
+            state.amount = '';
+            if (elements.amountInput) elements.amountInput.value = '';
+            updateReceiveAmount();
+            validateAmount();
+          }, 500);
+        });
+        elements.deleteBtn.addEventListener('touchend', function() { clearTimeout(longPressTimer); });
+      }
+
+      // Live rate updates
+      setInterval(updateRate, 10000);
+
+      // Init
+      if (elements.amountInput) elements.amountInput.value = '';
+      updateReceiveAmount();
+      validateAmount();
+    })();
+  </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

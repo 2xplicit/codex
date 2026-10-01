@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Exchange - Sell Astro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --blue: #3B82F6;
+    --emerald: #10B981;
+    --emerald-dark: #059669;
+    --red: #EF4444;
+    --bg: #020617;
+    --card: #0F172A;
+    --card-border: #1E293B;
+    --text: #F1F5F9;
+    --text-muted: #94A3B8;
+    --light-bg: #F8FAFC;
+    --light-card: #FFFFFF;
+    --light-border: #E2E8F0;
+    --light-text: #0F172A;
+    --light-muted: #64748B;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --card-border: #E2E8F0;
+      --text: #0F172A;
+      --text-muted: #64748B;
+    }
+  }
+
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+  }
+
+  .safe-top { padding-top: env(safe-area-inset-top); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+  .glass {
+    background: color-mix(in srgb, var(--card) 85%, transparent);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: var(--card);
+    border-radius: 32px;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 32px;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), var(--blue), var(--emerald), var(--blue));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 6s linear infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+
+  .btn-emerald {
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--emerald) 50%, transparent);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  .btn-emerald:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  .btn-emerald:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .pulse::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: inherit;
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    z-index: -1;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.05); }
+  }
+
+  .touch-target {
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .key {
+    transform: translateZ(0);
+    will-change: transform;
+    transition: transform 0.1s ease, background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .key:active {
+    transform: scale(0.95);
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  .amount-input {
+    font-size: 64px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    caret-color: var(--emerald);
+  }
+
+  @media (max-width: 380px) {
+    .amount-input { font-size: 48px; }
+  }
+
+  .blinking-cursor::after {
+    content: '|';
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    color: var(--emerald);
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97);
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-6px); }
+    40%, 60% { transform: translateX(6px); }
+  }
+
+  .badge-verify {
+    background: linear-gradient(135deg, var(--blue), #60A5FA);
+  }
+
+  .bottom-sheet {
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .bottom-sheet.active {
+    transform: translateY(0);
+  }
+
+  .backdrop {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .backdrop.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .checkmark {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: draw 0.6s ease-out forwards 0.3s;
+  }
+
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--emerald);
+    pointer-events: none;
+    opacity: 0;
+    animation: confetti-fall 2s ease-out forwards;
+  }
+
+  @keyframes confetti-fall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(80vh) rotate(720deg); }
+  }
+
+  .toast {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .segmented {
+    background: color-mix(in srgb, var(--card-border) 50%, transparent);
+    padding: 4px;
+  }
+
+  .segmented button {
+    transition: all 0.2s ease;
+  }
+
+  .segmented button.active {
+    background: var(--card);
+    box-shadow: 0 2px 8px -2px rgba(0,0,0,0.2);
+  }
+
+  .dropdown {
+    transform: scale(0.95) translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .dropdown.active {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .copy-feedback {
+    transition: all 0.3s ease;
+  }
+
+  button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body class="antialiased">
+  <div aria-live="polite" aria-atomic="true" class="sr-only" id="liveRegion"></div>
+  
+  <div class="w-full max-w-md mx-auto min-h-screen safe-top safe-bottom" style="padding: 20px;">
+    <div class="flex flex-col gap-[16px]">
+      
+      <!-- Header -->
+      <header class="flex items-center justify-between" style="padding: 0 4px;">
+        <button id="backBtn" class="touch-target rounded-[24px] glass border-[var(--card-border)]" aria-label="Go back" onclick="window.location.href='home.html'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <h1 class="text-[18px] font-semibold">Sell Astro</h1>
+        <button id="sellBtn" class="touch-target rounded-[24px] btn-emerald pulse relative text-white font-semibold px-6 text-[14px]">
+          <span id="sellBtnText">Sell</span>
+        </button>
+      </header>
+
+      <!-- User Card -->
+      <div class="gradient-border glass" style="padding: 24px;">
+        <div class="flex items-center gap-[16px]">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--blue)] to-[var(--emerald)] flex items-center justify-center text-white font-bold text-[18px] shrink-0">
+            GD
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-[18px] font-semibold truncate">Georgedawson@gmail.com</div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="segmented rounded-[16px] flex text-[14px] font-medium" role="tablist">
+                <button id="publicTab" class="px-3 py-1.5 rounded-[12px] active" role="tab" aria-selected="true">Public</button>
+                <button id="emailTab" class="px-3 py-1.5 rounded-[12px]" role="tab" aria-selected="false">Email</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="text-[14px] text-[var(--text-muted)] font-mono">wallet</div>
+            <div id="walletAddr" class="text-[14px] font-mono truncate">8d969eef6ecad3c2</div>
+          </div>
+          <button id="copyBtn" class="touch-target rounded-[16px] glass border border-[var(--card-border)] shrink-0" aria-label="Copy wallet address">
+            <svg id="copyIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <svg id="checkIcon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Balance Display -->
+      <div class="glass rounded-[32px] border border-[var(--card-border)] relative" style="padding: 24px;">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <div class="text-[14px] text-[var(--text-muted)] mb-1">Dollar funds</div>
+            <div class="text-[40px] font-bold tracking-tight">$<span id="usdBalance">1,568</span></div>
+          </div>
+          <div class="relative">
+            <button id="coinSelector" class="touch-target rounded-[16px] glass border border-[var(--card-border)] px-3 gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <div class="flex items-center gap-1">
+                    <span class="text-[14px] font-semibold">Astro</span>
+                    <div class="badge-verify rounded-full px-1.5 py-0.5">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="text-[12px] text-[var(--text-muted)]" id="astroBalance">3,756</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Amount Input -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-[14px] text-[var(--text-muted)]">You sell</div>
+            <button id="maxBtn" class="touch-target text-[14px] font-semibold text-[var(--emerald)] px-3 py-1.5 rounded-[12px] glass border border-[var(--card-border)]">
+              MAX
+            </button>
+          </div>
+          <div id="amountContainer" class="relative">
+            <div class="flex items-baseline gap-2 overflow-x-auto">
+              <span id="amountDisplay" class="amount-input blinking-cursor">0</span>
+              <button id="unitToggle" class="touch-target text-[24px] font-semibold text-[var(--text-muted)] px-2">
+                ASTRO
+              </button>
+            </div>
+            <div class="mt-2 flex items-center justify-between text-[14px]">
+              <div class="text-[var(--text-muted)]">
+                ≈ $<span id="usdEquivalent">0.00</span>
+              </div>
+              <div class="flex items-center gap-1 text-[var(--text-muted)]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>Network fee: $<span id="networkFee">0.02</span></span>
+              </div>
+            </div>
+            <div id="errorMsg" class="hidden mt-3 text-[14px] text-[var(--red)] flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v4M12 16h.01"/>
+              </svg>
+              <span id="errorText">Insufficient balance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Numeric Keypad -->
+      <div class="glass rounded-[32px] border border-[var(--card-border)]" style="padding: 16px;">
+        <div class="grid grid-cols-3 gap-[12px] mb-4">
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="1">1</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="2">2</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="3">3</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="4">4</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="5">5</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="6">6</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="7">7</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="8">8</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="9">9</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key=".">.</button>
+          <button class="key touch-target rounded-[24px] glass border border-[var(--card-border)] text-[24px] font-semibold" data-key="0">0</button>
+          <button id="deleteKey" class="key touch-target rounded-[24px] glass border border-[var(--card-border)]">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+              <path d="M18 9l-6 6M12 9l6 6"/>
+            </svg>
+          </button>
+        </div>
+        <button id="sendApproveBtn" class="w-full touch-target rounded-[24px] btn-emerald text-white font-bold text-[18px] disabled:opacity-40" disabled>
+          Send To Approve
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Sheet Confirmation -->
+  <div id="backdrop" class="backdrop fixed inset-0 z-40"></div>
+  <div id="bottomSheet" class="bottom-sheet fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+    <div class="glass rounded-t-[32px] border-t border-[var(--card-border)] max-w-md mx-auto" style="padding: 24px;">
+      <div class="w-12 h-1 bg-[var(--card-border)] rounded-full mx-auto mb-6"></div>
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--emerald)] to-[var(--emerald-dark)] flex items-center justify-center mx-auto mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M12 2v20M2 12h20"/>
+          </svg>
+        </div>
+        <h3 class="text-[24px] font-bold mb-2">Confirm Sale</h3>
+        <p class="text-[14px] text-[var(--text-muted)]">Review transaction details</p>
+      </div>
+      
+      <div class="space-y-3 mb-6">
+        <div class="glass rounded-[16px] border border-[var(--card-border)] p-4">
+          <div class="flex justify-between text-[14px] mb-2">
+            <span class="text-[var(--text-muted)]">You sell</span>
+            <span class="font-semibold"><span id="confirmAmount">0</span> ASTRO</span>
+          </div>
+          <div class="flex justify-between text-[14px]">
+            <span class="text-[var(--text-muted)]">You receive</span>
+            <span class="font-semibold text-[var(--emerald)]">$<span id="confirmUsd">0.00</span></span>
+          </div>
+        <div class="glass rounded-[16px] border border-[var(--card-border)] p-4">
+          <div class="flex justify-between text-[14px] mb-2">
+            <span class="text-[var(--text-muted)]">Network fee</span>
+            <span class="font-mono">$0.02</span>
+          </div>
+          <div class="flex justify-between text-[14px]">
+            <span class="text-[var(--text-muted)]">Total</span>
+            <span class="font-semibold">$<span id="confirmTotal">0.00</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="biometricArea" class="text-center mb-6">
+        <div class="w-20 h-20 rounded-full glass border-2 border-[var(--emerald)] flex items-center justify-center mx-auto mb-3">
+          <svg id="fingerprint" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="1.5">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+            <path d="M12 21a8 8 0 0 0 8-8M12 21a8 8 0 0 1-8-8M12 21v-8"/>
+            <path d="M8 12a4 4 0 0 1 8 0M6 12a6 6 0 0 1 12 0M4 12a8 8 0 0 1 16 0"/>
+          </svg>
+        </div>
+        <p class="text-[14px] text-[var(--text-muted)]">Authenticate with Face ID</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-[12px]">
+        <button id="cancelBtn" class="touch-target rounded-[24px] glass border border-[var(--card-border)] font-semibold">
+          Cancel
+        </button>
+        <button id="confirmBtn" class="touch-target rounded-[24px] btn-emerald text-white font-semibold relative" onclick="window.location.href='successsold.html'">
+          <span id="confirmBtnText">Confirm</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast fixed top-[80px] left-1/2 -translate-x-1/2 z-50 glass rounded-[16px] border border-[var(--emerald)] px-6 py-3 shadow-xl">
+    <div class="flex items-center gap-2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      <span id="toastText" class="text-[14px] font-semibold">Copied!</span>
+    </div>
+  </div>
+
+<script>
+  const state = {
+    amount: '0',
+    unit: 'ASTRO',
+    astroBalance: 3756,
+    usdBalance: 1568,
+    astroPrice: 0.42,
+    wallet: '8d969eef6ecad3c2',
+    isProcessing: false
+  };
+
+  const els = {
+    amountDisplay: document.getElementById('amountDisplay'),
+    unitToggle: document.getElementById('unitToggle'),
+    usdEquivalent: document.getElementById('usdEquivalent'),
+    sendApproveBtn: document.getElementById('sendApproveBtn'),
+    maxBtn: document.getElementById('maxBtn'),
+    errorMsg: document.getElementById('errorMsg'),
+    errorText: document.getElementById('errorText'),
+    amountContainer: document.getElementById('amountContainer'),
+    copyBtn: document.getElementById('copyBtn'),
+    copyIcon: document.getElementById('copyIcon'),
+    checkIcon: document.getElementById('checkIcon'),
+    toast: document.getElementById('toast'),
+    toastText: document.getElementById('toastText'),
+    liveRegion: document.getElementById('liveRegion'),
+    bottomSheet: document.getElementById('bottomSheet'),
+    backdrop: document.getElementById('backdrop'),
+    cancelBtn: document.getElementById('cancelBtn'),
+    confirmBtn: document.getElementById('confirmBtn'),
+    confirmAmount: document.getElementById('confirmAmount'),
+    confirmUsd: document.getElementById('confirmUsd'),
+    confirmTotal: document.getElementById('confirmTotal'),
+    backBtn: document.getElementById('backBtn'),
+    sellBtn: document.getElementById('sellBtn'),
+    sellBtnText: document.getElementById('sellBtnText'),
+    publicTab: document.getElementById('publicTab'),
+    emailTab: document.getElementById('emailTab'),
+    deleteKey: document.getElementById('deleteKey')
+  };
+
+  function formatNumber(num) {
+    const parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  }
+
+  function animateCount(el, start, end, duration = 300) {
+    const range = end - start;
+    const increment = range / (duration / 16);
+    let current = start;
+    const timer = setInterval(() => {
+      current += increment;
+      if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+        current = end;
+        clearInterval(timer);
+      }
+      el.textContent = formatNumber(current.toFixed(2));
+    }, 16);
+  }
+
+  function updateDisplay() {
+    const displayAmount = state.amount === '' ? '0' : state.amount;
+    els.amountDisplay.textContent = formatNumber(displayAmount);
+    
+    let usdValue = 0;
+    if (state.unit === 'ASTRO') {
+      usdValue = parseFloat(displayAmount) * state.astroPrice;
+    } else {
+      usdValue = parseFloat(displayAmount);
+    }
+    
+    animateCount(els.usdEquivalent, parseFloat(els.usdEquivalent.textContent.replace(/,/g, '')) || 0, usdValue);
+    
+    const astroAmount = state.unit === 'ASTRO' ? parseFloat(displayAmount) : parseFloat(displayAmount) / state.astroPrice;
+    const isValid = astroAmount > 0 && astroAmount <= state.astroBalance;
+    
+    els.sendApproveBtn.disabled = !isValid || state.isProcessing;
+    
+    if (astroAmount > state.astroBalance && displayAmount !== '0') {
+      els.errorMsg.classList.remove('hidden');
+      els.errorText.textContent = 'Insufficient balance';
+      els.amountContainer.classList.add('shake');
+      setTimeout(() => els.amountContainer.classList.remove('shake'), 400);
+      els.liveRegion.textContent = 'Insufficient balance';
+    } else {
+      els.errorMsg.classList.add('hidden');
+    }
+  }
+
+  function createRipple(e) {
+    const button = e.currentTarget;
+    const ripple = document.createElement('span');
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+    
+    button.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+    
+    if ('vibrate' in navigator) navigator.vibrate(10);
+  }
+
+  document.querySelectorAll('.key').forEach(key => {
+    key.addEventListener('click', (e) => {
+      createRipple(e);
+      const value = e.currentTarget.dataset.key;
+      
+      if (value === '.' && state.amount.includes('.')) return;
+      if (state.amount === '0' && value !== '.') {
+        state.amount = value;
+      } else if (state.amount.length < 12) {
+        state.amount += value;
+      }
+      updateDisplay();
+      els.liveRegion.textContent = `Amount: ${state.amount} ${state.unit}`;
+    });
+  });
+
+  let deleteInterval;
+  els.deleteKey.addEventListener('touchstart', startDelete);
+  els.deleteKey.addEventListener('mousedown', startDelete);
+  els.deleteKey.addEventListener('touchend', stopDelete);
+  els.deleteKey.addEventListener('mouseup', stopDelete);
+  els.deleteKey.addEventListener('mouseleave', stopDelete);
+
+  function startDelete(e) {
+    createRipple(e);
+    handleDelete();
+    deleteInterval = setTimeout(() => {
+      deleteInterval = setInterval(handleDelete, 100);
+    }, 500);
+  }
+
+  function stopDelete() {
+    clearTimeout(deleteInterval);
+    clearInterval(deleteInterval);
+  }
+
+  function handleDelete() {
+    if (state.amount.length > 1) {
+      state.amount = state.amount.slice(0, -1);
+    } else {
+      state.amount = '0';
+    }
+    updateDisplay();
+  }
+
+  els.maxBtn.addEventListener('click', (e) => {
+    createRipple(e);
+    if (state.unit === 'ASTRO') {
+      state.amount = state.astroBalance.toString();
+    } else {
+      state.amount = (state.astroBalance * state.astroPrice).toFixed(2);
+    }
+    updateDisplay();
+    els.amountContainer.style.transform = 'scale(1.02)';
+    setTimeout(() => els.amountContainer.style.transform = '', 200);
+  });
+
+  els.unitToggle.addEventListener('click', (e) => {
+    createRipple(e);
+    if (state.unit === 'ASTRO') {
+      state.unit = 'USD';
+      state.amount = (parseFloat(state.amount) * state.astroPrice).toFixed(2);
+    } else {
+      state.unit = 'ASTRO';
+      state.amount = (parseFloat(state.amount) / state.astroPrice).toString();
+    }
+    els.unitToggle.textContent = state.unit;
+    updateDisplay();
+  });
+
+  els.copyBtn.addEventListener('click', async (e) => {
+    createRipple(e);
+    try {
+      await navigator.clipboard.writeText(state.wallet);
+      els.copyIcon.classList.add('hidden');
+      els.checkIcon.classList.remove('hidden');
+      showToast('Wallet address copied!');
+      setTimeout(() => {
+        els.copyIcon.classList.remove('hidden');
+        els.checkIcon.classList.add('hidden');
+      }, 2000);
+    } catch (err) {
+      showToast('Failed to copy', true);
+    }
+  });
+
+  function showToast(msg, isError = false) {
+    els.toastText.textContent = msg;
+    els.toast.style.borderColor = isError ? 'var(--red)' : 'var(--emerald)';
+    els.toast.classList.add('show');
+    els.liveRegion.textContent = msg;
+    setTimeout(() => els.toast.classList.remove('show'), 3000);
+  }
+
+  els.sendApproveBtn.addEventListener('click', (e) => {
+    createRipple(e);
+    const astroAmount = state.unit === 'ASTRO' ? parseFloat(state.amount) : parseFloat(state.amount) / state.astroPrice;
+    const usdAmount = astroAmount * state.astroPrice;
+    
+    els.confirmAmount.textContent = formatNumber(astroAmount.toFixed(2));
+    els.confirmUsd.textContent = formatNumber(usdAmount.toFixed(2));
+    els.confirmTotal.textContent = formatNumber((usdAmount + 0.02).toFixed(2));
+    
+    els.backdrop.classList.add('active');
+    els.bottomSheet.classList.add('active');
+    els.liveRegion.textContent = 'Confirmation sheet opened';
+  });
+
+  els.cancelBtn.addEventListener('click', closeBottomSheet);
+  els.backdrop.addEventListener('click', closeBottomSheet);
+
+  function closeBottomSheet() {
+    els.bottomSheet.classList.remove('active');
+    els.backdrop.classList.remove('active');
+  }
+
+  els.confirmBtn.addEventListener('click', async (e) => {
+    createRipple(e);
+    state.isProcessing = true;
+    els.confirmBtn.disabled = true;
+    els.confirmBtn.innerHTML = '<svg class="spinner mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>';
+    
+    await new Promise(r => setTimeout(r, 2000));
+    
+    els.confirmBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path class="checkmark" d="M20 6L9 17l-5-5"/></svg>';
+    
+    createConfetti();
+    if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
+    
+    setTimeout(() => {
+      closeBottomSheet();
+      showToast('Transaction submitted successfully!');
+      state.amount = '0';
+      updateDisplay();
+      state.isProcessing = false;
+      els.confirmBtn.disabled = false;
+      els.confirmBtn.innerHTML = '<span id="confirmBtnText">Confirm</span>';
+    }, 1500);
+  });
+
+  function createConfetti() {
+    const colors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
+    for (let i = 0; i < 50; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.top = '-10px';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.5 + 's';
+      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 2000);
+    }
+  }
+
+  els.backBtn.addEventListener('click', (e) => {
+    createRipple(e);
+    showToast('Navigating back...');
+  });
+
+  els.sellBtn.addEventListener('click', (e) => {
+    createRipple(e);
+    if (state.isProcessing) return;
+    els.sellBtnText.textContent = 'Processing...';
+    setTimeout(() => {
+      els.sellBtnText.textContent = 'Sell';
+      showToast('Sell order placed!');
+    }, 1500);
+  });
+
+  els.publicTab.addEventListener('click', () => {
+    els.publicTab.classList.add('active');
+    els.emailTab.classList.remove('active');
+    els.publicTab.setAttribute('aria-selected', 'true');
+    els.emailTab.setAttribute('aria-selected', 'false');
+  });
+
+  els.emailTab.addEventListener('click', () => {
+    els.emailTab.classList.add('active');
+    els.publicTab.classList.remove('active');
+    els.emailTab.setAttribute('aria-selected', 'true');
+    els.publicTab.setAttribute('aria-selected', 'false');
+  });
+
+  updateDisplay();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

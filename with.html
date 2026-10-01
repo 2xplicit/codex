@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Codex Exchange - Withdraw</title>
+<style>
+  :root {
+    --bg: #020617;
+    --card: #0F172A;
+    --border: #1E293B;
+    --text: #F8FAFC;
+    --text-muted: #94A3B8;
+    --blue: #3B82F6;
+    --emerald: #10B981;
+    --emerald-dark: #059669;
+    --red: #EF4444;
+  }
+  
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    touch-action: manipulation;
+    overscroll-behavior-y: contain;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 28rem;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    padding-top: calc(1.25rem + env(safe-area-inset-top));
+    background: linear-gradient(to bottom right, #020617, #0F172A, #020617);
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .glass {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: var(--card);
+    border-radius: 32px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), #3B82F6, #10B981, #3B82F6);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+
+  .key-btn {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transform: translateZ(0);
+    will-change: transform;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .key-btn:active {
+    transform: scale(0.95);
+  }
+
+  .key-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .key-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 1s;
+  }
+
+  .key-btn:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+  }
+
+  .icon-btn {
+    height: 3rem;
+    width: 3rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .withdraw-btn {
+    height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, var(--emerald), var(--emerald-dark));
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .avatar {
+    height: 3.5rem;
+    width: 3.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(to bottom right, var(--blue), var(--emerald));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .user-details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .email-row {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .email {
+    font-size: 0.875rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .copy-wallet {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .copy-wallet:hover {
+    color: #CBD5E1;
+  }
+
+  .balance-card {
+    background: rgba(2, 6, 23, 0.5);
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .balance-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .balance-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .count-animate {
+    animation: countUp 0.6s ease-out;
+  }
+
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-card {
+    border-radius: 32px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    flex: 1;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .text-input {
+    width: 100%;
+    height: 3.5rem;
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 0 6rem 0 1rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .text-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .input-actions {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .input-action-btn {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .input-action-btn:hover {
+    background: #1E293B;
+  }
+
+  .paste-btn {
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem;
+    background: #1E293B;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .paste-btn:hover {
+    background: #334155;
+  }
+
+  .status-text {
+    height: 1.25rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .amount-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .max-btn {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--blue);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .max-btn:hover {
+    color: #60A5FA;
+  }
+
+  .amount-container {
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    transition: all 0.2s;
+  }
+
+  .amount-container.error {
+    border-color: var(--red);
+  }
+
+  .amount-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .currency-symbol {
+    margin-top: 0.5rem;
+    color: #64748B;
+  }
+
+  .amount-display {
+    flex: 1;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    min-height: 4rem;
+    word-break: break-all;
+  }
+
+  .amount-cursor::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+    color: var(--blue);
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .fee-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .fee-label {
+    font-size: 0.75rem;
+    color: #64748B;
+  }
+
+  .fee-amount {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .error-text {
+    height: 1.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--red);
+  }
+
+  .shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-6px); }
+    40%, 60% { transform: translateX(6px); }
+  }
+
+  .keypad-card {
+    border-radius: 32px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .key {
+    height: 4rem;
+    border-radius: 1rem;
+    background: rgba(30, 41, 59, 0.5);
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+  }
+
+  .key:hover {
+    background: #1E293B;
+  }
+
+  .send-btn {
+    width: 100%;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, var(--emerald), var(--emerald-dark));
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  .toast-container {
+    position: fixed;
+    top: calc(1.25rem + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    width: 100%;
+    max-width: 28rem;
+    padding: 0 1.25rem;
+  }
+
+  .toast {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes slideDown {
+    to { transform: translateY(100%); opacity: 0; }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: none;
+  }
+
+  .modal-overlay.show {
+    display: block;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0F172A;
+    border-radius: 32px 32px 0 0;
+    padding: 1.5rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-handle {
+    width: 3rem;
+    height: 0.25rem;
+    background: #334155;
+    border-radius: 9999px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .sheet-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .confirm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .confirm-row:last-child {
+    border-bottom: none;
+  }
+
+  .confirm-label {
+    color: var(--text-muted);
+  }
+
+  .confirm-value {
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .confirm-value.mono {
+    font-family: monospace;
+    font-size: 0.875rem;
+  }
+
+  .info-box {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .info-text {
+    font-size: 0.75rem;
+    color: #CBD5E1;
+  }
+
+  .faceid-anim {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    animation: facePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes facePulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  .sheet-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .btn-secondary {
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: #1E293B;
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, var(--emerald), var(--emerald-dark));
+    color: white;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .success-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+
+  .success-modal.show {
+    display: flex;
+  }
+
+  .success-content {
+    position: relative;
+    border-radius: 32px;
+    padding: 2rem;
+    max-width: 24rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .success-icon {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  .success-check {
+    animation: draw 0.6s ease-out forwards;
+  }
+
+  @keyframes draw {
+    from { stroke-dasharray: 50; stroke-dashoffset: 50; }
+    to { stroke-dasharray: 50; stroke-dashoffset: 0; }
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .success-text {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <header class="header">
+    <button id="backBtn" class="key-btn icon-btn glass" aria-label="Go back" onclick="window.location.href='withdrawal.html'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19L5 12L12 5"/>
+      </svg>
+    </button>
+    
+    <button id="withdrawHeaderBtn" class="key-btn withdraw-btn pulse-glow">
+      Withdraw
+    </button>
+  </header>
+
+  <div class="gradient-border">
+    <div class="user-info">
+      <div class="avatar">GD</div>
+      <div class="user-details">
+        <div class="email-row">
+          <p class="email">Georgedawson@gmail.com</p>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--blue); flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9 12L11 14L15 10"/>
+          </svg>
+        </div>
+        <button id="copyWalletBtn" class="copy-wallet" aria-label="Copy wallet address">
+          <span id="walletText">8d969eef6ecad3c2</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13"/>
+            <path d="M5 15H4V4H13V5"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <div class="balance-card">
+      <p class="balance-label">Available funds</p>
+      <p class="balance-amount count-animate" id="availableBalance">$1,568</p>
+    </div>
+  </div>
+
+  <div class="glass form-card">
+    <div class="form-group">
+      <label for="walletAddress" class="form-label">Solana wallet address</label>
+      <div class="input-wrapper">
+        <input 
+          id="walletAddress" 
+          type="text" 
+          placeholder="Paste your Solana wallet address here"
+          class="text-input"
+          aria-describedby="addressStatus"
+        />
+        <div class="input-actions">
+          <button id="qrBtn" class="key-btn input-action-btn" aria-label="Scan QR code">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7V5H5M3 17V19H5M21 7V5H19M21 17V19H19M7 3H17M7 21H17M3 7H5M3 17H5M19 7H21M19 17H21M7 3V5M7 21V19M17 3V5M17 21V19"/>
+            </svg>
+          </button>
+          <button id="pasteBtn" class="key-btn paste-btn" aria-label="Paste address">
+            Paste
+          </button>
+        </div>
+      </div>
+      <div id="addressStatus" class="status-text" role="status" aria-live="polite"></div>
+    </div>
+
+    <div class="form-group">
+      <div class="amount-header">
+        <span class="form-label" style="margin: 0;">Amount to withdraw</span>
+        <button id="maxBtn" class="key-btn max-btn">MAX</button>
+      </div>
+      
+      <div id="amountContainer" class="amount-container">
+        <div class="amount-row">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="currency-symbol">
+            <path d="M12 1V23M17 5H9.5C8.5 5 8 6 8 7C8 8 8.5 9 9.5 9H14.5C15.5 9 16 10 16 11C16 12 15.5 13 14.5 13H7M12 23V17"/>
+          </svg>
+          <div style="flex: 1;">
+            <div id="amountDisplay" class="amount-display amount-cursor" aria-live="polite">0</div>
+          </div>
+        </div>
+        <div class="fee-row">
+          <span class="fee-label">Network fee</span>
+          <span class="fee-amount">≈ $0.50</span>
+        </div>
+      </div>
+      <div id="amountError" class="error-text" role="alert" aria-live="assertive"></div>
+    </div>
+  </div>
+
+  <div class="glass keypad-card">
+    <div class="keypad">
+      <button class="key-btn key" data-key="1">1</button>
+      <button class="key-btn key" data-key="2">2</button>
+      <button class="key-btn key" data-key="3">3</button>
+      <button class="key-btn key" data-key="4">4</button>
+      <button class="key-btn key" data-key="5">5</button>
+      <button class="key-btn key" data-key="6">6</button>
+      <button class="key-btn key" data-key="7">7</button>
+      <button class="key-btn key" data-key="8">8</button>
+      <button class="key-btn key" data-key="9">9</button>
+      <button class="key-btn key" data-key=".">.</button>
+      <button class="key-btn key" data-key="0">0</button>
+      <button id="deleteBtn" class="key-btn key" aria-label="Delete">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 4H8L1 12L8 20H21V4Z"/>
+          <path d="M18 9L12 15M12 9L18 15"/>
+        </svg>
+      </button>
+    </div>
+
+    <button id="sendBtn" disabled class="key-btn send-btn">
+      <span id="sendBtnText">Send To Approve</span>
+    </button>
+  </div>
+
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<div id="confirmSheet" class="modal-overlay">
+  <div class="modal-backdrop" id="sheetBackdrop"></div>
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    
+    <h3 class="sheet-title">Confirm Withdrawal</h3>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <div class="confirm-row">
+        <span class="confirm-label">Amount</span>
+        <span class="confirm-value" id="confirmAmount">$0</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-label">To Address</span>
+        <span class="confirm-value mono" id="confirmAddress">-</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-label">Network Fee</span>
+        <span class="confirm-value" style="font-size: 1rem;">$0.50</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-label">Total</span>
+        <span class="confirm-value" style="font-size: 1.25rem;" id="confirmTotal">$0</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <svg class="faceid-anim" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--blue);">
+        <rect x="6" y="8" width="36" height="32"/>
+        <circle cx="24" cy="24" r="6"/>
+        <path d="M6 16H2M6 32H2M42 16H46M42 32H46M18 8V2M30 8V2M18 40V46M30 40V46"/>
+      </svg>
+      <p class="info-text">Face ID / Fingerprint required to confirm this transaction</p>
+    </div>
+
+    <div class="sheet-actions">
+      <button id="cancelConfirmBtn" class="key-btn btn-secondary">Cancel</button>
+      <button id="confirmWithdrawBtn" class="key-btn btn-primary">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div id="successModal" class="success-modal">
+  <div class="modal-backdrop"></div>
+  <div class="glass success-content">
+    <div class="success-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald);">
+        <path class="success-check" d="M20 6L9 17L4 12"/>
+      </svg>
+    </div>
+    <h3 class="success-title">Withdrawal Successful</h3>
+    <p class="success-text">Your transaction has been submitted to the Solana network</p>
+    <button id="doneBtn" class="key-btn btn-primary" style="width: 100%;">Done</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const state = {
+      amount: '0',
+      address: '',
+      availableBalance: 1568,
+      isValidAddress: false,
+      deleteTimer: null
+    };
+
+    const $ = function(id) { return document.getElementById(id); };
+    
+    const elements = {
+      amountDisplay: $('amountDisplay'),
+      amountContainer: $('amountContainer'),
+      amountError: $('amountError'),
+      walletAddress: $('walletAddress'),
+      addressStatus: $('addressStatus'),
+      sendBtn: $('sendBtn'),
+      maxBtn: $('maxBtn'),
+      deleteBtn: $('deleteBtn'),
+      pasteBtn: $('pasteBtn'),
+      qrBtn: $('qrBtn'),
+      copyWalletBtn: $('copyWalletBtn'),
+      backBtn: $('backBtn'),
+      withdrawHeaderBtn: $('withdrawHeaderBtn'),
+      confirmSheet: $('confirmSheet'),
+      sheetBackdrop: $('sheetBackdrop'),
+      cancelConfirmBtn: $('cancelConfirmBtn'),
+      confirmWithdrawBtn: $('confirmWithdrawBtn'),
+      successModal: $('successModal'),
+      doneBtn: $('doneBtn'),
+      toastContainer: $('toastContainer'),
+      walletText: $('walletText'),
+      confirmAmount: $('confirmAmount'),
+      confirmAddress: $('confirmAddress'),
+      confirmTotal: $('confirmTotal'),
+      sendBtnText: $('sendBtnText')
+    };
+
+    function formatNumber(num) {
+      const parts = num.toString().split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    }
+
+    function updateAmountDisplay() {
+      if (elements.amountDisplay) {
+        elements.amountDisplay.textContent = formatNumber(state.amount) || '0';
+      }
+      validateAmount();
+    }
+
+    function validateSolanaAddress(address) {
+      const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+      return base58Regex.test(address);
+    }
+
+    function validateAddress() {
+      if (!elements.walletAddress || !elements.addressStatus) return;
+      
+      const address = elements.walletAddress.value.trim();
+      state.address = address;
+      
+      if (!address) {
+        elements.addressStatus.innerHTML = '';
+        state.isValidAddress = false;
+        updateSendButton();
+        return;
+      }
+
+      if (validateSolanaAddress(address)) {
+        elements.addressStatus.innerHTML = 
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald);">' +
+          '<path d="M9 12L11 14L15 10"/></svg>' +
+          '<span style="color: var(--emerald);">Valid Solana address</span>';
+        state.isValidAddress = true;
+      } else {
+        elements.addressStatus.innerHTML = 
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--red);">' +
+          '<path d="M18 6L6 18M6 6L18 18"/></svg>' +
+          '<span style="color: var(--red);">Invalid Solana address format</span>';
+        state.isValidAddress = false;
+      }
+      updateSendButton();
+    }
+
+    function validateAmount() {
+      const amount = parseFloat(state.amount) || 0;
+      const fee = 0.50;
+      
+      if (!elements.amountError || !elements.amountContainer) return;
+      
+      if (amount > state.availableBalance) {
+        elements.amountError.textContent = 'Insufficient funds';
+        elements.amountContainer.classList.add('error', 'shake');
+        setTimeout(function() { 
+          if (elements.amountContainer) elements.amountContainer.classList.remove('shake'); 
+        }, 400);
+      } else if (amount > 0 && amount + fee > state.availableBalance) {
+        elements.amountError.textContent = 'Insufficient funds for network fee ($' + fee.toFixed(2) + ')';
+        elements.amountContainer.classList.add('error', 'shake');
+        setTimeout(function() { 
+          if (elements.amountContainer) elements.amountContainer.classList.remove('shake'); 
+        }, 400);
+      } else {
+        elements.amountError.textContent = '';
+        elements.amountContainer.classList.remove('error');
+      }
+      updateSendButton();
+    }
+
+    function updateSendButton() {
+      if (!elements.sendBtn) return;
+      const amount = parseFloat(state.amount) || 0;
+      const isValid = amount > 0 && amount <= state.availableBalance && state.isValidAddress && amount + 0.50 <= state.availableBalance;
+      elements.sendBtn.disabled = !isValid;
+    }
+
+    function showToast(message, type) {
+      if (!elements.toastContainer) return;
+      type = type || 'success';
+      const toast = document.createElement('div');
+      toast.className = 'glass toast';
+      const color = type === 'success' ? 'var(--emerald)' : 'var(--red)';
+      const icon = type === 'success' 
+        ? '<path d="M9 12L11 14L15 10"/>'
+        : '<path d="M18 6L6 18M6 6L18 18"/>';
+      
+      toast.innerHTML = 
+        '<div style="flex-shrink: 0;">' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ' + color + ';">' + icon + '</svg></div>' +
+        '<p style="font-size: 0.875rem; font-weight: 500; flex: 1;">' + message + '</p>';
+      
+      elements.toastContainer.appendChild(toast);
+      setTimeout(function() {
+        toast.style.animation = 'slideDown 0.3s ease-in forwards';
+        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 300);
+      }, 3000);
+    }
+
+    function handleKeyPress(key) {
+      if (key === '.') {
+        if (!state.amount.includes('.')) {
+          state.amount = state.amount === '0' ? '0.' : state.amount + '.';
+        }
+      } else {
+        if (state.amount === '0') {
+          state.amount = key;
+        } else {
+          const parts = state.amount.split('.');
+          if (parts.length === 2 && parts[1].length >= 2) return;
+          if (parts[0].replace(/,/g, '').length >= 10 && !state.amount.includes('.')) return;
+          state.amount += key;
+        }
+      }
+      updateAmountDisplay();
+    }
+
+    function handleDelete() {
+      if (state.amount.length > 1) {
+        state.amount = state.amount.slice(0, -1);
+        if (state.amount === '') state.amount = '0';
+      } else {
+        state.amount = '0';
+      }
+      updateAmountDisplay();
+    }
+
+    function createConfetti() {
+      const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = 'position: fixed; width: 10px; height: 10px; background: ' + 
+          colors[Math.floor(Math.random() * colors.length)] + 
+          '; left: 50%; top: 50%; pointer-events: none; z-index: 9999;';
+        document.body.appendChild(confetti);
+        
+        const angle = (Math.PI * 2 * i) / 50;
+        const velocity = 5 + Math.random() * 10;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity - 5;
+        
+        let x = 0, y = 0, frame = 0;
+        function animate() {
+          frame++;
+          x += vx;
+          y += vy + frame * 0.3;
+          confetti.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + (frame * 10) + 'deg)';
+          confetti.style.opacity = Math.max(0, 1 - frame / 60);
+          if (frame < 60) requestAnimationFrame(animate);
+          else if (confetti.parentNode) confetti.remove();
+        }
+        requestAnimationFrame(animate);
+      }
+    }
+
+    document.querySelectorAll('[data-key]').forEach(function(btn) {
+      if (btn) {
+        btn.addEventListener('click', function() {
+          handleKeyPress(btn.dataset.key);
+        });
+      }
+    });
+
+    if (elements.deleteBtn) {
+      elements.deleteBtn.addEventListener('pointerdown', function() {
+        handleDelete();
+        state.deleteTimer = setTimeout(function() {
+          state.deleteTimer = setInterval(handleDelete, 100);
+        }, 500);
+      });
+
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(function(evt) {
+        elements.deleteBtn.addEventListener(evt, function() {
+          clearTimeout(state.deleteTimer);
+          clearInterval(state.deleteTimer);
+        });
+      });
+    }
+
+    if (elements.maxBtn) {
+      elements.maxBtn.addEventListener('click', function() {
+        state.amount = (state.availableBalance - 0.50).toFixed(2);
+        updateAmountDisplay();
+        if (elements.amountContainer) {
+          elements.amountContainer.style.transform = 'scale(1.02)';
+          setTimeout(function() { 
+            if (elements.amountContainer) elements.amountContainer.style.transform = ''; 
+          }, 200);
+        }
+      });
+    }
+
+    if (elements.walletAddress) {
+      elements.walletAddress.addEventListener('input', validateAddress);
+    }
+    
+    if (elements.pasteBtn) {
+      elements.pasteBtn.addEventListener('click', async function() {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (elements.walletAddress) {
+            elements.walletAddress.value = text;
+            validateAddress();
+            showToast('Address pasted');
+          }
+        } catch (err) {
+          showToast('Paste failed. Please paste manually', 'error');
+        }
+      });
+    }
+
+    if (elements.qrBtn) {
+      elements.qrBtn.addEventListener('click', function() {
+        showToast('QR Scanner: Camera overlay simulation', 'success');
+      });
+    }
+
+    if (elements.copyWalletBtn) {
+      elements.copyWalletBtn.addEventListener('click', async function() {
+        try {
+          await navigator.clipboard.writeText('8d969eef6ecad3c2');
+          if (elements.walletText) {
+            elements.walletText.textContent = 'Copied!';
+            elements.copyWalletBtn.style.transform = 'scale(1.05)';
+            showToast('Wallet address copied');
+            setTimeout(function() {
+              if (elements.walletText) elements.walletText.textContent = '8d969eef6ecad3c2';
+              if (elements.copyWalletBtn) elements.copyWalletBtn.style.transform = '';
+            }, 1500);
+          }
+        } catch (err) {
+          showToast('Copy failed', 'error');
+        }
+      });
+    }
+
+    if (elements.backBtn) {
+      elements.backBtn.addEventListener('click', function() {
+        document.body.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        document.body.style.transform = 'translateX(100%)';
+        document.body.style.opacity = '0';
+        showToast('Navigating back...');
+      });
+    }
+
+    if (elements.withdrawHeaderBtn) {
+      elements.withdrawHeaderBtn.addEventListener('click', function() {
+        elements.withdrawHeaderBtn.textContent = 'Processing...';
+        elements.withdrawHeaderBtn.style.opacity = '0.5';
+        setTimeout(function() {
+          if (elements.withdrawHeaderBtn) {
+            elements.withdrawHeaderBtn.textContent = 'Withdraw';
+            elements.withdrawHeaderBtn.style.opacity = '';
+          }
+        }, 1500);
+      });
+    }
+
+    if (elements.sendBtn) {
+      elements.sendBtn.addEventListener('click', function() {
+        const amount = parseFloat(state.amount);
+        const fee = 0.50;
+        
+        if (elements.confirmAmount) elements.confirmAmount.textContent = '$' + formatNumber(amount.toFixed(2));
+        if (elements.confirmAddress) elements.confirmAddress.textContent = state.address.slice(0, 6) + '...' + state.address.slice(-6);
+        if (elements.confirmTotal) elements.confirmTotal.textContent = '$' + formatNumber((amount + fee).toFixed(2));
+        
+        if (elements.confirmSheet) elements.confirmSheet.classList.add('show');
+      });
+    }
+
+    function hideSheet() {
+      if (!elements.confirmSheet) return;
+      const sheet = elements.confirmSheet.querySelector('.bottom-sheet');
+      if (sheet) {
+        sheet.style.animation = 'slideDown 0.3s ease-in forwards';
+        setTimeout(function() {
+          elements.confirmSheet.classList.remove('show');
+          sheet.style.animation = '';
+        }, 300);
+      }
+    }
+
+    if (elements.cancelConfirmBtn) {
+      elements.cancelConfirmBtn.addEventListener('click', hideSheet);
+    }
+
+    if (elements.sheetBackdrop) {
+      elements.sheetBackdrop.addEventListener('click', hideSheet);
+    }
+
+    if (elements.confirmWithdrawBtn) {
+      elements.confirmWithdrawBtn.addEventListener('click', function() {
+        elements.confirmWithdrawBtn.innerHTML = '<div class="spinner"></div>Processing...';
+        elements.confirmWithdrawBtn.disabled = true;
+
+        setTimeout(function() {
+          if (elements.confirmSheet) elements.confirmSheet.classList.remove('show');
+          if (elements.successModal) elements.successModal.classList.add('show');
+          createConfetti();
+          if (elements.confirmWithdrawBtn) {
+            elements.confirmWithdrawBtn.innerHTML = 'Confirm';
+            elements.confirmWithdrawBtn.disabled = false;
+          }
+        }, 2000);
+      });
+    }
+
+    if (elements.doneBtn) {
+      elements.doneBtn.addEventListener('click', function() {
+        if (elements.successModal) elements.successModal.classList.remove('show');
+        state.amount = '0';
+        if (elements.walletAddress) elements.walletAddress.value = '';
+        state.address = '';
+        state.isValidAddress = false;
+        updateAmountDisplay();
+        validateAddress();
+        showToast('Transaction completed');
+      });
+    }
+
+    updateAmountDisplay();
+    if (elements.walletAddress) elements.walletAddress.value = '';
+    validateAddress();
+  })();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

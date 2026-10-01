@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Wallet - Main</title>
+<style>
+    :root {
+        --primary: #2563EB;
+        --primary-dark: #1D4ED8;
+        --success: #10B981;
+        --danger: #EF4444;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 1.25rem;
+        --radius-3xl: 1.75rem;
+        --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Light Theme */
+    body.light {
+        --bg: #F8FAFC;
+        --bg-secondary: #F1F5F9;
+        --card: rgba(255, 255, 255, 0.75);
+        --card-hover: rgba(255, 255, 255, 0.9);
+        --text: #0F172A;
+        --text-secondary: #475569;
+        --text-muted: #64748B;
+        --border: rgba(226, 232, 240, 0.6);
+        --shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+        --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.12);
+        --nav-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Dark Theme */
+    body.dark {
+        --bg: #0F172A;
+        --bg-secondary: #1E293B;
+        --card: rgba(30, 41, 59, 0.75);
+        --card-hover: rgba(30, 41, 59, 0.9);
+        --text: #F1F5F9;
+        --text-secondary: #CBD5E1;
+        --text-muted: #94A3B8;
+        --border: rgba(51, 65, 85, 0.6);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+        --nav-bg: rgba(15, 23, 42, 0.8);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        transition: background-color var(--transition), color var(--transition);
+        min-height: 100vh;
+        padding-bottom: 100px;
+    }
+
+    .container {
+        max-width: 428px;
+        margin: 0 auto;
+        padding: 0 16px;
+        position: relative;
+    }
+
+    /* Glassmorphism Base */
+    .glass {
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        transition: all var(--transition);
+    }
+
+    /* Header */
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        padding: 16px 0;
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        margin: 0 -16px 24px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .wallet-dropdown {
+        position: relative;
+    }
+
+    .wallet-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: var(--radius-2xl);
+        background: var(--bg-secondary);
+        border: none;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: transform 100ms ease;
+        max-width: 160px;
+    }
+
+    .wallet-btn:active {
+        transform: scale(0.95);
+    }
+
+    .wallet-btn span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .chevron {
+        width: 16px;
+        height: 16px;
+        transition: transform 200ms ease;
+        flex-shrink: 0;
+    }
+
+    .dropdown-open .chevron {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        min-width: 200px;
+        padding: 8px;
+        border-radius: var(--radius-2xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transform: translateY(-8px) scale(0.95);
+        transition: all 200ms ease;
+        pointer-events: none;
+        z-index: 50;
+    }
+
+    .dropdown-open .dropdown-menu {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: var(--radius-xl);
+        border: none;
+        background: transparent;
+        color: var(--text);
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 150ms ease;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(37, 99, 235, 0.1);
+    }
+
+    .dropdown-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-2xl);
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 100ms ease;
+        position: relative;
+    }
+
+    .icon-btn:active {
+        transform: scale(0.9);
+    }
+
+    .icon-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        background: #EF4444;
+        border-radius: 50%;
+        border: 2px solid var(--bg-secondary);
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-2xl);
+        cursor: pointer;
+    }
+
+    /* Main Balance Card */
+    .balance-card {
+        padding: 24px;
+        border-radius: var(--radius-3xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+        transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .balance-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .balance-label {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .balance-row {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .balance-amount {
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .balance-badge {
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .balance-change {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+    }
+
+    .balance-change svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .text-danger {
+        color: #EF4444;
+    }
+
+    .text-success {
+        color: #10B981;
+    }
+
+    .text-muted {
+        color: var(--text-muted);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .action-btn {
+        padding: 20px 12px;
+        border-radius: var(--radius-3xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        transition: transform 100ms ease, box-shadow 200ms ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+    }
+
+    .action-btn:active {
+        transform: scale(0.95);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-2xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-icon svg {
+        width: 24px;
+        height: 24px;
+        color: white;
+    }
+
+    .action-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    /* Ripple Effect */
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple-animation 600ms ease-out;
+        pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    /* Tabs */
+    .tabs-container {
+        padding: 6px;
+        border-radius: var(--radius-3xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .tabs-inner {
+        display: flex;
+        position: relative;
+    }
+
+    .tab-slider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50%;
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        border-radius: var(--radius-2xl);
+        transition: transform var(--transition);
+        z-index: 1;
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: var(--radius-2xl);
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: color 200ms ease;
+    }
+
+    .tab-btn.active {
+        color: white;
+    }
+
+    /* Content Cards */
+    .content-card {
+        padding: 20px;
+        border-radius: var(--radius-3xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        margin-bottom: 16px;
+        transition: transform 200ms ease, box-shadow 200ms ease;
+        animation: fadeIn 300ms ease-out;
+    }
+
+    .content-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .coin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .coin-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .coin-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-2xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .coin-name {
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    .coin-symbol {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .coin-price {
+        text-align: right;
+    }
+
+    .coin-value {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .coin-change {
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .sparkline {
+        width: 100%;
+        height: 48px;
+    }
+
+    .sparkline path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw 1.5s ease-out forwards;
+    }
+
+    @keyframes draw {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .funds-card {
+        padding: 24px;
+        border-radius: var(--radius-3xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .funds-amount {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 8px 0 12px;
+    }
+
+    .funds-chart {
+        width: 100%;
+        height: 64px;
+        margin-top: 16px;
+    }
+
+    /* Skeleton Loading */
+    .skeleton {
+        background: linear-gradient(90deg, 
+            rgba(148, 163, 184, 0.1) 25%, 
+            rgba(148, 163, 184, 0.2) 50%, 
+            rgba(148, 163, 184, 0.1) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* FAB */
+    .fab-container {
+        position: fixed;
+        bottom: 90px;
+        right: 16px;
+        z-index: 50;
+    }
+
+    .fab-menu {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .fab-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: var(--radius-2xl);
+        background: var(--card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(16px) scale(0.8);
+        transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .fab-open .fab-item {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .fab-open .fab-item:nth-child(1) { transition-delay: 50ms; }
+    .fab-open .fab-item:nth-child(2) { transition-delay: 100ms; }
+    .fab-open .fab-item:nth-child(3) { transition-delay: 150ms; }
+
+    .fab-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    .fab-icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fab-icon-box svg {
+        width: 20px;
+        height: 20px;
+        color: white;
+    }
+
+    .fab-main {
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-2xl);
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        box-shadow: var(--shadow-lg);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 100ms ease;
+    }
+
+    .fab-main:active {
+        transform: scale(0.9);
+    }
+
+    .fab-main svg {
+        width: 24px;
+        height: 24px;
+        color: white;
+        transition: transform 300ms ease;
+    }
+
+    .fab-open .fab-main svg {
+        transform: rotate(45deg);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        padding: 8px 16px 16px;
+    }
+
+    .nav-container {
+        max-width: 428px;
+        margin: 0 auto;
+        padding: 8px;
+        border-radius: var(--radius-3xl);
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+    }
+
+    .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .nav-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 12px 8px;
+        border-radius: var(--radius-2xl);
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 200ms ease;
+    }
+
+    .nav-btn:active {
+        transform: scale(0.95);
+    }
+
+    .nav-btn.active {
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        color: white;
+    }
+
+    .nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-btn span {
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .gradient-primary {
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    }
+
+    .gradient-orange {
+        background: linear-gradient(135deg, #F97316, #EF4444);
+    }
+
+    .gradient-green {
+        background: linear-gradient(135deg, #10B981, #059669);
+    }
+
+    .gradient-purple {
+        background: linear-gradient(135deg, #A855F7, #EC4899);
+    }
+
+    .gradient-bitcoin {
+        background: linear-gradient(135deg, #F7931A, #FFAB00);
+    }
+
+    .gradient-eth {
+        background: linear-gradient(135deg, #627EEA, #8E8EEE);
+    }
+</style>
+</head>
+<body class="light">
+<div class="container">
+    
+    <!-- Header -->
+    <header>
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="wallet-dropdown" id="walletDropdown">
+                    <button class="wallet-btn" id="walletBtn">
+                        <span>Georgedawson@gmail.com</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-item">
+                            <div class="dropdown-icon gradient-primary">
+                                <svg width="16" height="16" fill="white" stroke="white" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; font-weight: 500;">Main wallet</div>
+                                <div style="font-size: 12px; opacity: 0.6;">Active</div>
+                            </div>
+                        </button>
+                        <button class="dropdown-item">
+                            <div class="dropdown-icon gradient-purple">
+                                <svg width="16" height="16" fill="white" stroke="white" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; font-weight: 500;">Coin wallet</div>
+                                <div style="font-size: 12px; opacity: 0.6;">$2,450</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="light-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg class="dark-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+                
+                <button class="icon-btn" aria-label="Search" onclick="window.location.href='search.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+                
+                <button class="icon-btn" aria-label="Notifications" onclick="window.location.href='notification.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+               
+            <button class="avatr-btn" arial-label="profile" onclick="window.location.href='mainprofile.html'">    
+                <svg class="avatar" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="12" fill="url(#avatarGradient)"/>
+                    <path d="M20 12C16.69 12 14 14.69 14 18C14 21.31 16.69 24 20 24C23.31 24 26 21.31 26 18C26 14.69 23.31 12 20 12ZM20 14C22.21 14 24 15.79 24 18C24 20.21 22 20 22C17.79 22 16 20.21 16 18C16 15.79 17.79 14 20 14ZM10 28C10 24.69 16 23 20 23C24 23 30 24.69 30 28V30H10V28Z" fill="white"/>
+                    <defs>
+                        <linearGradient id="avatarGradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2563EB"/>
+                            <stop offset="1" stop-color="#1D4ED8"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </button>    
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Balance Card -->
+    <div class="balance-card">
+        <div class="balance-label">Main Balance</div>
+        <div class="balance-row">
+            <div class="balance-amount">
+                <span id="balanceCounter">$0</span>
+            </div>
+            <span class="balance-badge">101</span>
+        </div>
+        <div class="balance-change">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+            </svg>
+            <span class="text-danger" style="font-weight: 500;">-0.05$</span>
+            <span class="text-muted">last 24h</span>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="action-btn" data-action="swap" onclick="window.location.href='swap.html'">
+            <div class="action-icon gradient-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+            </div>
+            <span class="action-label">Swap</span>
+        </button>
+        
+        <button class="action-btn" data-action="sell" onclick="window.location.href='sell.html'">
+            <div class="action-icon gradient-orange">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="action-label">Sell</span>
+        </button>
+        
+        <button class="action-btn" data-action="buy" onclick="window.location.href='buy.html'">
+            <div class="action-icon gradient-green">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            </div>
+            <span class="action-label">Buy</span>
+        </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <div class="tabs-inner">
+            <div class="tab-slider" id="tabSlider"></div>
+            <button class="tab-btn active" data-tab="coins">Coins</button>
+            <button class="tab-btn" data-tab="funds">Funds</button>
+        </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="tabContent">
+        <!-- Coins Tab -->
+        <div id="coinsContent">
+            <div class="content-card">
+                <div class="coin-header">
+                    <div class="coin-info">
+                        <div class="coin-icon gradient-bitcoin">₿</div>
+                        <div>
+                            <div class="coin-name">Bitcoin</div>
+                            <div class="coin-symbol">BTC</div>
+                        </div>
+                    </div>
+                    <div class="coin-price">
+                        <div class="coin-value">$42,350.00</div>
+                        <div class="coin-change text-success">+2.4%</div>
+                    </div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 200 50" preserveAspectRatio="none">
+                    <path d="M0,35 L20,30 L40,32 L60,25 L80,28 L100,20 L120,22 L140,15 L160,18 L180,10 L200,12" 
+                          fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="content-card">
+                <div class="coin-header">
+                    <div class="coin-info">
+                        <div class="coin-icon gradient-eth">Ξ</div>
+                        <div>
+                            <div class="coin-name">Ethereum</div>
+                            <div class="coin-symbol">ETH</div>
+                        </div>
+                    </div>
+                    <div class="coin-price">
+                        <div class="coin-value">$2,280.50</div>
+                        <div class="coin-change text-danger">-1.2%</div>
+                    </div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 200 50" preserveAspectRatio="none">
+                    <path d="M0,20 L20,25 L40,22 L60,30 L80,28 L100,35 L120,32 L140,38 L160,35 L180,40 L200,38" 
+                          fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="content-card">
+                <div class="coin-header">
+                    <div class="coin-info">
+                        <div class="coin-icon gradient-purple">◎</div>
+                        <div>
+                            <div class="coin-name">Solana</div>
+                            <div class="coin-symbol">SOL</div>
+                        </div>
+                    </div>
+                    <div class="coin-price">
+                        <div class="coin-value">$98.45</div>
+                        <div class="coin-change text-success">+5.7%</div>
+                    </div>
+                <svg class="sparkline" viewBox="0 0 200 50" preserveAspectRatio="none">
+                    <path d="M0,40 L20,35 L40,38 L60,30 L80,32 L100,25 L120,28 L140,20 L160,22 L180,15 L200,18" 
+                          fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Funds Tab -->
+        <div id="fundsContent" class="hidden">
+            <div class="funds-card">
+                <div class="balance-label">Dollar funds</div>
+                <div class="funds-amount">$10,000</div>
+                <div class="balance-change">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    <span class="text-success" style="font-weight: 500;">+0.12$</span>
+                    <span class="text-muted">last 24h</span>
+                </div>
+                <svg class="funds-chart" viewBox="0 0 300 60" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="sparkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3" />
+                            <stop offset="100%" style="stop-color:#10B981;stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,40 L30,38 L60,35 L90,32 L120,30 L150,28 L180,25 L210,22 L240,20 L270,18 L300,15" 
+                          fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M0,40 L30,38 L60,35 L90,32 L120,30 L150,28 L180,25 L210,22 L240,20 L270,18 L300,15 L300,60 L0,60 Z" 
+                          fill="url(#sparkGradient)"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab-container" id="fabContainer">
+        <div class="fab-menu">
+            <button class="fab-item">
+                <span class="fab-label">Receive</span>
+                <div class="fab-icon-box gradient-primary">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+            </button>
+            
+            <button class="fab-item">
+                <span class="fab-label">Create Wallet</span>
+                <div class="fab-icon-box gradient-purple">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                </div>
+            </button>
+            
+            <button class="fab-item" onclick="window.location.href='form.html'">
+                <span class="fab-label">Add Funds</span>
+                <div class="fab-icon-box gradient-green">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </div>
+            </button>
+        </div>
+        
+        <button class="fab-main" id="fabMain">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <button class="nav-btn active" data-nav="home" onclick="window.location.href='home.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Home</span>
+                </button>
+                
+                <button class="nav-btn" data-nav="search" onclick="window.location.href='search.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span>Search</span>
+                </button>
+                
+                <button class="nav-btn" data-nav="community" onclick="window.location.href='community.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Community</span>
+                </button>
+                
+                <button class="nav-btn" data-nav="profile">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span>Profile</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+</div>
+
+<script>
+(function() {
+    // Theme Management
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const lightIcon = document.querySelector('.light-icon');
+    const darkIcon = document.querySelector('.dark-icon');
+    
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            body.classList.remove('light');
+            body.classList.add('dark');
+            lightIcon.classList.add('hidden');
+            darkIcon.classList.remove('hidden');
+        } else {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        }
+        localStorage.setItem('codex-theme', theme);
+    }
+    
+    const savedTheme = localStorage.getItem('codex-theme') || 
+                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(savedTheme);
+    
+    themeToggle.addEventListener('click', () => {
+        const newTheme = body.classList.contains('light') ? 'dark' : 'light';
+        setTheme(newTheme);
+    });
+
+    // Count Up Animation
+    function animateCountUp(element, target, duration) {
+        const start = 0;
+        const increment = target / (duration / 16);
+        let current = start;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = '$' + Math.floor(current).toLocaleString();
+        }, 16);
+    }
+    
+    setTimeout(() => {
+        const countEl = document.getElementById('balanceCounter');
+        animateCountUp(countEl, 1000, 1500);
+    }, 100);
+
+    // Wallet Dropdown
+    const walletDropdown = document.getElementById('walletDropdown');
+    const walletBtn = document.getElementById('walletBtn');
+    
+    walletBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        walletDropdown.classList.toggle('dropdown-open');
+    });
+    
+    document.addEventListener('click', () => {
+        walletDropdown.classList.remove('dropdown-open');
+    });
+
+    // Ripple Effect
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabSlider = document.getElementById('tabSlider');
+    const coinsContent = document.getElementById('coinsContent');
+    const fundsContent = document.getElementById('fundsContent');
+    
+    tabBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            tabSlider.style.transform = `translateX(${index * 100}%)`;
+            
+            if (btn.dataset.tab === 'coins') {
+                fundsContent.classList.add('hidden');
+                coinsContent.classList.remove('hidden');
+            } else {
+                coinsContent.classList.add('hidden');
+                fundsContent.classList.remove('hidden');
+            }
+        });
+    });
+
+    // FAB Menu
+    const fabContainer = document.getElementById('fabContainer');
+    const fabMain = document.getElementById('fabMain');
+    let fabOpen = false;
+    
+    fabMain.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fabOpen = !fabOpen;
+        fabContainer.classList.toggle('fab-open', fabOpen);
+    });
+    
+    document.addEventListener('click', () => {
+        if (fabOpen) {
+            fabOpen = false;
+            fabContainer.classList.remove('fab-open');
+        }
+    });
+
+    // Bottom Navigation
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+})();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

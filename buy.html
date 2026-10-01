@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Codex Exchange - Send Bitro</title>
+<meta name="color-scheme" content="light dark">
+<style>
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --codex-blue: #3B82F6;
+  --emerald: #10B981;
+  --error: #EF4444;
+  --bg: #020617;
+  --card: #0F172A;
+  --border: #1E293B;
+  --text: #F8FAFC;
+  --text-muted: #94A3B8;
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-muted: #64748B;
+  }
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+
+.w-full { width: 100%; }
+.w-12 { width: 3rem; }
+.w-14 { width: 3.5rem; }
+.w-24 { width: 6rem; }
+.h-1 { height: 0.25rem; }
+.h-14 { height: 3.5rem; }
+.h-24 { height: 6rem; }
+.h-\[56px\] { height: 56px; }
+
+.rounded-full { border-radius: 9999px; }
+.rounded-\[12px\] { border-radius: var(--radius-sm); }
+.rounded-\[16px\] { border-radius: var(--radius-md); }
+.rounded-\[24px\] { border-radius: var(--radius-lg); }
+.rounded-\[32px\] { border-radius: var(--radius-xl); }
+
+.text-\[12px\] { font-size: 12px; }
+.text-\[14px\] { font-size: 14px; }
+.text-\[18px\] { font-size: 18px; }
+.text-\[20px\] { font-size: 20px; }
+.text-\[24px\] { font-size: 24px; }
+.text-\[32px\] { font-size: 32px; }
+.text-\[40px\] { font-size: 40px; }
+.text-\[64px\] { font-size: 64px; }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+.text-center { text-align: center; }
+.text-white { color: #fff; }
+.text-\[var\(--text-muted\)\] { color: var(--text-muted); }
+.text-\[var\(--emerald\)\] { color: var(--emerald); }
+.text-\[var\(--codex-blue\)\] { color: var(--codex-blue); }
+
+.bg-\[var\(--border\)\] { background-color: var(--border); }
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+.from-blue-500 {
+  --tw-gradient-from: #3B82F6;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.to-blue-600 {
+  --tw-gradient-to: #2563EB;
+}
+
+.opacity-50 { opacity: 0.5; }
+.opacity-100 { opacity: 1; }
+
+.transition-opacity { transition: opacity 0.2s; }
+.flex-shrink-0 { flex-shrink: 0; }
+.min-w-0 { min-width: 0; }
+.truncate { 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.sticky { position: sticky; }
+.top-0 { top: 0; }
+.right-1\/2 { right: 50%; }
+.top-1\/2 { top: 50%; }
+.translate-x-8 { transform: translateX(2rem); }
+.-translate-y-1\/2 { transform: translateY(-50%); }
+.z-10 { z-index: 10; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+.pointer-events-none { pointer-events: none; }
+.pointer-events-all { pointer-events: all; }
+.space-y-4 > * + * { margin-top: 1rem; }
+
+.glass {
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid var(--border);
+}
+
+.gradient-border {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), #3B82F6, #10B981, #3B82F6);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotate 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  to { --angle: 360deg; }
+}
+
+.btn {
+  min-height: 48px;
+  min-width: 48px;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 18px;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+  transform: translateZ(0);
+  will-change: transform;
+  touch-action: manipulation;
+  user-select: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: none;
+}
+
+.btn:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--emerald), #059669);
+  color: white;
+  box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 12px 32px -4px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.2); }
+}
+
+.keypad-btn {
+  aspect-ratio: 1;
+  min-height: 64px;
+  font-size: 28px;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateZ(0);
+  will-change: transform;
+  cursor: pointer;
+}
+
+.keypad-btn:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.3);
+  transform: scale(0);
+  animation: ripple-effect 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-effect {
+  to { transform: scale(4); opacity: 0; }
+}
+
+.amount-input {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  caret-color: var(--codex-blue);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-input.error {
+  color: var(--error);
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.toast {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 9999;
+  backdrop-filter: blur(16px);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.bottom-sheet {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.bottom-sheet.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.bottom-sheet-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  border: 1px solid var(--border);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.bottom-sheet.active .bottom-sheet-content {
+  transform: translateY(0);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.success-check {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 0.6s ease-out forwards;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--emerald);
+  pointer-events: none;
+  z-index: 10000;
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.count-up {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.verified-badge {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wallet-address {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.wallet-address:active {
+  transform: scale(1.05);
+  color: var(--codex-blue);
+}
+
+.page-transition {
+  animation: slideIn 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.biometric-ring {
+  animation: biometric-pulse 2s ease-out infinite;
+}
+
+@keyframes biometric-pulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--codex-blue);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+<div class="max-w-md mx-auto min-h-screen flex flex-col" style="padding:20px; padding-top:calc(20px + env(safe-area-inset-top)); padding-bottom:calc(20px + env(safe-area-inset-bottom)); gap:16px;">
+  
+  <!-- Header -->
+  <header class="flex items-center justify-between page-transition">
+    <button id="backBtn" class="btn btn-ghost" aria-label="Go back" onclick="window.location.href='home.html'">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18L9 12L15 6"/>
+      </svg>
+      <span>Back</span>
+    </button>
+    <button id="buyBtn" class="btn btn-primary pulse" aria-label="Buy more crypto">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5V19M5 12H19"/>
+      </svg>
+      <span id="buyText">Buy</span>
+    </button>
+  </header>
+
+  <!-- User Card -->
+  <div class="gradient-border">
+    <div class="glass p-6 rounded-[32px] flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-[20px] flex-shrink-0">
+        GD
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[18px] font-semibold truncate">Georgedawson@gmail.com</span>
+          <span class="verified-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17L4 12"/>
+            </svg>
+          </span>
+        </div>
+        <button id="walletBtn" class="wallet-address flex items-center gap-2" aria-label="Copy wallet address">
+          <span id="walletAddress">8d969eef6ecad3c2</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balance Display -->
+  <div class="glass p-6 rounded-[32px]">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex-1">
+        <button id="coinSelector" class="flex items-center gap-2" aria-label="Select cryptocurrency" style="background:none;border:none;padding:0;cursor:pointer;color:var(--text);">
+          <div class="flex items-center gap-2">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+              <path d="M12 6V18M9 9H15M9 15H13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-[40px] font-bold leading-none">1,568</span>
+            <span class="text-[20px] font-semibold text-[var(--text-muted)]">BTC</span>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50">
+            <path d="M6 9L12 15L18 9"/>
+          </svg>
+        </button>
+        <div class="verified-badge mt-2 inline-flex">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17L4 12"/>
+          </svg>
+          Bitro coin
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-[32px] font-bold"><span class="count-up" id="usdValue">$3,756</span></div>
+        <div class="text-[14px] text-[var(--text-muted)]">Dollar funds</div>
+      </div>
+      <button id="rateTooltip" class="text-[14px] text-[var(--text-muted)] btn-ghost" aria-label="View exchange rate" style="min-height:auto;padding:6px 12px;border-radius:16px;font-size:14px;">
+        1 BTC = $2.39
+      </button>
+    </div>
+  </div>
+
+  <!-- Amount Input -->
+  <div class="glass p-6 rounded-[32px] sticky top-0 z-10">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-[14px] text-[var(--text-muted)] font-medium">Amount to Send</span>
+      <div class="flex items-center gap-2">
+        <button id="currencyToggle" class="text-[14px] font-semibold text-[var(--codex-blue)] px-3 py-1 rounded-[12px] btn-ghost" style="min-height:auto;">BTC</button>
+        <button id="maxBtn" class="text-[14px] font-semibold text-[var(--emerald)] px-3 py-1 rounded-[12px] btn-ghost" style="min-height:auto;">MAX</button>
+      </div>
+    </div>
+    <div class="relative">
+      <input 
+        id="amountInput" 
+        type="text" 
+        inputmode="none" 
+        readonly 
+        class="amount-input" 
+        placeholder="0" 
+        aria-live="polite"
+        aria-label="Amount to send"
+        value=""
+      />
+      <span class="blink absolute right-1/2 translate-x-8 top-1/2 -translate-y-1/2 text-[64px] font-bold opacity-50 pointer-events-none" id="cursor">|</span>
+    </div>
+    <div class="mt-4 flex items-center justify-between text-[14px]">
+      <span class="text-[var(--text-muted)]">≈ <span id="approxUsd">$0.00</span></span>
+      <span class="text-[var(--text-muted)]">Fee: <span id="networkFee">$0.00</span></span>
+    </div>
+  </div>
+
+  <!-- Numeric Keypad -->
+  <div class="glass p-6 rounded-[32px] flex-1 flex flex-col">
+    <div class="grid grid-cols-3 gap-3 mb-4 flex-1">
+      <button class="keypad-btn" data-key="1">1</button>
+      <button class="keypad-btn" data-key="2">2</button>
+      <button class="keypad-btn" data-key="3">3</button>
+      <button class="keypad-btn" data-key="4">4</button>
+      <button class="keypad-btn" data-key="5">5</button>
+      <button class="keypad-btn" data-key="6">6</button>
+      <button class="keypad-btn" data-key="7">7</button>
+      <button class="keypad-btn" data-key="8">8</button>
+      <button class="keypad-btn" data-key="9">9</button>
+      <button class="keypad-btn" data-key=".">.</button>
+      <button class="keypad-btn" data-key="0">0</button>
+      <button class="keypad-btn flex items-center justify-center" data-key="delete" aria-label="Delete">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 5H9L3 12L9 19H20A2 2 0 0 0 22 17V7A2 2 0 0 0 20 5Z"/>
+          <path d="M15 9L11 13M11 9L15 13"/>
+        </svg>
+      </button>
+    </div>
+    <button id="sendBtn" class="btn btn-primary w-full h-[56px] text-[18px]" disabled aria-label="Send to approve transaction">
+      <span id="sendText">Send To Approve</span>
+    </button>
+  </div>
+
+</div>
+
+<!-- Bottom Sheet Confirmation -->
+<div id="bottomSheet" class="bottom-sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="bottom-sheet-content">
+    <div class="w-12 h-1 bg-[var(--border)] rounded-full mx-auto mb-6"></div>
+    <h2 id="sheetTitle" class="text-[24px] font-bold mb-6 text-center">Confirm Transaction</h2>
+    
+    <div class="space-y-4 mb-6">
+      <div class="glass p-4 rounded-[24px] flex justify-between items-center">
+        <span class="text-[var(--text-muted)]">Sending</span>
+        <span class="font-bold text-[18px]" id="confirmAmount">0 BTC</span>
+      </div>
+      <div class="glass p-4 rounded-[24px] flex justify-between items-center">
+        <span class="text-[var(--text-muted)]">To</span>
+        <span class="text-[14px]" style="font-family:system-ui,sans-serif;" id="confirmWallet">8d969eef6ec...</span>
+      </div>
+      <div class="glass p-4 rounded-[24px] flex justify-between items-center">
+        <span class="text-[var(--text-muted)]">Network Fee</span>
+        <span class="font-bold text-[18px]" id="confirmFee">$0.00</span>
+      </div>
+      <div class="glass p-4 rounded-[24px] flex justify-between items-center">
+        <span class="text-[var(--text-muted)]">Total</span>
+        <span class="font-bold text-[20px] text-[var(--emerald)]" id="confirmTotal">$0.00</span>
+      </div>
+    </div>
+
+    <div class="glass p-6 rounded-[24px] mb-6 relative overflow-hidden">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="biometric-ring w-24 h-24 rounded-full border-4" style="border-color:var(--emerald);"></div>
+        <div class="biometric-ring w-24 h-24 rounded-full border-4" style="border-color:var(--emerald);animation-delay:0.5s;"></div>
+      </div>
+      <div class="relative flex flex-col items-center gap-3">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C9 7 9 11 9 11C9 15 12 16 12 22C12 16 15 15 15 11C15 11 15 7 12 2Z"/>
+          <path d="M8 11C8 14 10 16 12 16C14 16 16 14 16 11"/>
+        </svg>
+        <span class="font-semibold">Confirm with Face ID</span>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <button id="cancelBtn" class="btn btn-ghost flex-1">Cancel</button>
+      <button id="confirmBtn" class="btn btn-primary flex-1">
+        <span id="confirmText">Confirm</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  const state = {
+    amount: '0',
+    maxBalance: 1568,
+    btcRate: 2.39,
+    feeRate: 0.001,
+    currency: 'BTC',
+    isProcessing: false,
+    longPressTimer: null
+  };
+
+  const els = {
+    amountInput: document.getElementById('amountInput'),
+    cursor: document.getElementById('cursor'),
+    sendBtn: document.getElementById('sendBtn'),
+    sendText: document.getElementById('sendText'),
+    buyBtn: document.getElementById('buyBtn'),
+    buyText: document.getElementById('buyText'),
+    backBtn: document.getElementById('backBtn'),
+    maxBtn: document.getElementById('maxBtn'),
+    currencyToggle: document.getElementById('currencyToggle'),
+    walletBtn: document.getElementById('walletBtn'),
+    walletAddress: document.getElementById('walletAddress'),
+    usdValue: document.getElementById('usdValue'),
+    approxUsd: document.getElementById('approxUsd'),
+    networkFee: document.getElementById('networkFee'),
+    bottomSheet: document.getElementById('bottomSheet'),
+    cancelBtn: document.getElementById('cancelBtn'),
+    confirmBtn: document.getElementById('confirmBtn'),
+    confirmText: document.getElementById('confirmText'),
+    confirmAmount: document.getElementById('confirmAmount'),
+    confirmWallet: document.getElementById('confirmWallet'),
+    confirmFee: document.getElementById('confirmFee'),
+    confirmTotal: document.getElementById('confirmTotal'),
+    toast: document.getElementById('toast'),
+    coinSelector: document.getElementById('coinSelector'),
+    rateTooltip: document.getElementById('rateTooltip')
+  };
+
+  function showToast(message, duration) {
+    if (!els.toast) return;
+    duration = duration || 2000;
+    els.toast.textContent = message;
+    els.toast.classList.add('show');
+    setTimeout(function() {
+      if (els.toast) els.toast.classList.remove('show');
+    }, duration);
+  }
+
+  function formatNumber(num, decimals) {
+    if (typeof decimals === 'undefined') decimals = 8;
+    const parts = num.toFixed(decimals).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts[0].replace(/\.?0+$/, '') || '0';
+  }
+
+  function formatCurrency(num) {
+    return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function addRipple(e) {
+    const btn = e.currentTarget;
+    if (!btn) return;
+    const ripple = document.createElement('span');
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.className = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    
+    btn.appendChild(ripple);
+    setTimeout(function() { ripple.remove(); }, 600);
+  }
+
+  function updateDisplay() {
+    const numAmount = parseFloat(state.amount) || 0;
+    const usdAmount = numAmount * state.btcRate;
+    const fee = Math.max(numAmount * state.feeRate, 0.0001);
+    const total = numAmount + fee;
+    
+    if (els.amountInput) {
+      els.amountInput.value = state.amount;
+      els.amountInput.classList.toggle('error', total > state.maxBalance && numAmount > 0);
+    }
+    if (els.cursor) {
+      els.cursor.style.display = state.amount === '0' ? 'block' : 'none';
+    }
+    
+    if (els.approxUsd) animateCount(els.approxUsd, usdAmount, formatCurrency);
+    if (els.networkFee) animateCount(els.networkFee, fee * state.btcRate, formatCurrency);
+    
+    const isValid = numAmount > 0 && total <= state.maxBalance;
+    if (els.sendBtn) els.sendBtn.disabled = !isValid;
+    
+    if (numAmount > 0 && total > state.maxBalance) {
+      showToast('Insufficient balance', 1500);
+    }
+  }
+
+  function animateCount(el, target, formatter) {
+    if (!el) return;
+    const current = parseFloat(el.dataset.value || 0);
+    const duration = 300;
+    const start = performance.now();
+    
+    function step(timestamp) {
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const value = current + (target - current) * progress;
+      el.textContent = formatter(value);
+      el.dataset.value = value;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function handleKeypad(key) {
+    if (state.isProcessing) return;
+    
+    if (key === 'delete') {
+      if (state.amount.length > 1) {
+        state.amount = state.amount.slice(0, -1);
+      } else {
+        state.amount = '0';
+      }
+    } else if (key === '.') {
+      if (!state.amount.includes('.')) {
+        state.amount = state.amount === '0' ? '0.' : state.amount + '.';
+      }
+    } else {
+      if (state.amount === '0') {
+        state.amount = key;
+      } else if (state.amount.length < 12) {
+        state.amount += key;
+      }
+    }
+    updateDisplay();
+  }
+
+  function createConfetti() {
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+    for (let i = 0; i < 50; i++) {
+      setTimeout(function() {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.3 + 's';
+        confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(function() { confetti.remove(); }, 4000);
+      }, i * 20);
+    }
+  }
+
+  // Event Listeners with null checks
+  const keypadBtns = document.querySelectorAll('.keypad-btn');
+  if (keypadBtns) {
+    keypadBtns.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        addRipple(e);
+        handleKeypad(btn.dataset.key);
+      });
+      
+      if (btn.dataset.key === 'delete') {
+        btn.addEventListener('mousedown', function() {
+          state.longPressTimer = setTimeout(function() {
+            state.amount = '0';
+            updateDisplay();
+            if (navigator.vibrate) navigator.vibrate(50);
+          }, 500);
+        });
+        btn.addEventListener('mouseup', function() { clearTimeout(state.longPressTimer); });
+        btn.addEventListener('mouseleave', function() { clearTimeout(state.longPressTimer); });
+        btn.addEventListener('touchstart', function() {
+          state.longPressTimer = setTimeout(function() {
+            state.amount = '0';
+            updateDisplay();
+            if (navigator.vibrate) navigator.vibrate(50);
+          }, 500);
+        });
+        btn.addEventListener('touchend', function() { clearTimeout(state.longPressTimer); });
+      }
+    });
+  }
+
+  if (els.maxBtn) {
+    els.maxBtn.addEventListener('click', function() {
+      const fee = state.maxBalance * state.feeRate;
+      state.amount = (state.maxBalance - fee).toFixed(8).replace(/\.?0+$/, '');
+      updateDisplay();
+      if (navigator.vibrate) navigator.vibrate(30);
+    });
+  }
+
+  if (els.currencyToggle) {
+    els.currencyToggle.addEventListener('click', function() {
+      state.currency = state.currency === 'BTC' ? 'USD' : 'BTC';
+      els.currencyToggle.textContent = state.currency;
+      showToast('Switched to ' + state.currency);
+    });
+  }
+
+  if (els.walletBtn) {
+    els.walletBtn.addEventListener('click', function() {
+      if (!navigator.clipboard || !els.walletAddress) {
+        showToast('Copy not supported');
+        return;
+      }
+      navigator.clipboard.writeText(els.walletAddress.textContent).then(function() {
+        showToast('Wallet address copied!');
+        if (navigator.vibrate) navigator.vibrate(30);
+      }).catch(function() {
+        showToast('Copy failed');
+      });
+    });
+  }
+
+  if (els.sendBtn) {
+    els.sendBtn.addEventListener('click', function() {
+      const numAmount = parseFloat(state.amount);
+      const fee = Math.max(numAmount * state.feeRate, 0.0001);
+      const total = numAmount + fee;
+      
+      if (els.confirmAmount) els.confirmAmount.textContent = formatNumber(numAmount, 8) + ' BTC';
+      if (els.confirmWallet && els.walletAddress) els.confirmWallet.textContent = els.walletAddress.textContent.slice(0, 8) + '...';
+      if (els.confirmFee) els.confirmFee.textContent = formatCurrency(fee * state.btcRate);
+      if (els.confirmTotal) els.confirmTotal.textContent = formatCurrency(total * state.btcRate);
+      
+      if (els.bottomSheet) els.bottomSheet.classList.add('active');
+      if (navigator.vibrate) navigator.vibrate(50);
+    });
+  }
+
+  if (els.cancelBtn) {
+    els.cancelBtn.addEventListener('click', function() {
+      if (els.bottomSheet) els.bottomSheet.classList.remove('active');
+    });
+  }
+
+  if (els.confirmBtn) {
+    els.confirmBtn.addEventListener('click', function() {
+      if (state.isProcessing) return;
+      state.isProcessing = true;
+      
+      if (els.confirmText) els.confirmText.innerHTML = '<div class="spinner"></div>';
+      els.confirmBtn.disabled = true;
+      
+      setTimeout(function() {
+        if (els.confirmText) els.confirmText.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="success-check"><path d="M20 6L9 17L4 12"/></svg>';
+        
+        createConfetti();
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        
+        setTimeout(function() {
+          if (els.bottomSheet) els.bottomSheet.classList.remove('active');
+          state.amount = '0';
+          state.isProcessing = false;
+          if (els.confirmBtn) els.confirmBtn.disabled = false;
+          if (els.confirmText) els.confirmText.textContent = 'Confirm';
+          updateDisplay();
+          showToast('Transaction sent successfully!', 3000);
+        }, 1000);
+      }, 2000);
+    });
+  }
+
+  if (els.buyBtn) {
+    els.buyBtn.addEventListener('click', function() {
+      if (els.buyText) els.buyText.textContent = 'Processing...';
+      els.buyBtn.disabled = true;
+      setTimeout(function() {
+        showToast('Redirecting to buy page...');
+        if (els.buyText) els.buyText.textContent = 'Buy';
+        if (els.buyBtn) els.buyBtn.disabled = false;
+      }, 1500);
+    });
+  }
+
+  if (els.backBtn) {
+    els.backBtn.addEventListener('click', function() {
+      showToast('Navigating back...');
+    });
+  }
+
+  if (els.bottomSheet) {
+    els.bottomSheet.addEventListener('click', function(e) {
+      if (e.target === els.bottomSheet) {
+        els.bottomSheet.classList.remove('active');
+      }
+    });
+  }
+
+  if (els.coinSelector) {
+    els.coinSelector.addEventListener('click', function() {
+      showToast('Coin selector coming soon');
+    });
+  }
+
+  if (els.rateTooltip) {
+    els.rateTooltip.addEventListener('click', function() {
+      showToast('Exchange rate: 1 BTC = $2.39');
+    });
+  }
+
+  // Init
+  updateDisplay();
+  if (els.usdValue) animateCount(els.usdValue, 3756, formatCurrency);
+
+})();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

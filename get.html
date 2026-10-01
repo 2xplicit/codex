@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Approval | Modern UI 2026</title>
+<style>
+    :root {
+        --primary: #3B82F6;
+        --primary-dark: #1D4ED8;
+        --success: #10B981;
+        --warning: #F59E0B;
+        --error: #EF4444;
+        --bg: #020617;
+        --card: #0F172A;
+        --card-border: rgba(255, 255, 255, 0.12);
+        --text: #F8FAFC;
+        --text-secondary: #94A3B8;
+        --divider: rgba(148, 163, 184, 0.15);
+        --glass: rgba(15, 23, 42, 0.75);
+        --shadow: 0 24px 80px -20px rgba(0, 0, 0, 0.5);
+    }
+    
+    [data-theme="light"] {
+        --bg: #F8FAFC;
+        --card: #FFFFFF;
+        --card-border: rgba(0, 0, 0, 0.09);
+        --text: #0F172A;
+        --text-secondary: #64748B;
+        --divider: rgba(0, 0, 0, 0.08);
+        --glass: rgba(255, 255, 255, 0.75);
+        --shadow: 0 24px 80px -20px rgba(15, 23, 42, 0.15);
+    }
+
+    * {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        transition: background 300ms ease, color 300ms ease;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .container {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .glass-card {
+        background: var(--glass);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow);
+        border-radius: 32px;
+        padding: 40px;
+        width: 100%;
+        max-width: 448px;
+    }
+
+    .gradient-border {
+        position: relative;
+        background: var(--card);
+    }
+
+    .gradient-border::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(16, 185, 129, 0.5));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes ripple {
+        from {
+            transform: scale(0);
+            opacity: 1;
+        }
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes toastIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes toastOut {
+        to {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+        }
+    }
+
+    .animate-slide-in {
+        animation: slideIn 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .theme-toggle {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.75rem;
+        border-radius: 50%;
+        background: var(--glass);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--card-border);
+        z-index: 50;
+        cursor: pointer;
+        transition: all 200ms ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .theme-toggle:hover {
+        transform: rotate(15deg) scale(1.1);
+    }
+
+    .theme-toggle svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        display: block;
+    }
+
+    .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+        transition: color 200ms ease;
+        background: none;
+        border: none;
+    }
+
+    .back-btn:hover {
+        color: var(--text);
+    }
+
+    .back-btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .alert-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .alert-banner svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+        color: #3B82F6;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-content p {
+        font-size: 0.875rem;
+        color: var(--text);
+        line-height: 1.5;
+    }
+
+    .alert-content .email {
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .copy-email-btn {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: var(--primary);
+        cursor: pointer;
+        transition: opacity 200ms;
+        background: none;
+        border: none;
+    }
+
+    .copy-email-btn:hover {
+        opacity: 0.8;
+    }
+
+    .copy-email-btn svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+
+    .section {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-label {
+        display: block;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .code-section {
+        position: relative;
+    }
+
+    .code-display-wrapper {
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .code-display {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #10B981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        font-size: 3rem;
+        line-height: 1;
+    }
+
+    .copy-code-btn {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background: var(--divider);
+        cursor: pointer;
+        transition: opacity 200ms ease;
+        border: none;
+        opacity: 0;
+    }
+
+    .group:hover .copy-code-btn {
+        opacity: 1;
+    }
+
+    .copy-code-btn svg {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--divider);
+        margin-bottom: 1.5rem;
+    }
+
+    .increase-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .badge-increase {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .badge-increase span {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--success);
+    }
+
+    .increase-wrapper svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--success);
+    }
+
+    .unique-code-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        background: var(--divider);
+    }
+
+    .unique-code-wrapper code {
+        flex: 1;
+        font-size: 0.875rem;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+        color: var(--text);
+    }
+
+    .toggle-unique-btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 200ms;
+        color: var(--primary);
+        background: rgba(59, 130, 246, 0.1);
+        cursor: pointer;
+        border: none;
+    }
+
+    .toggle-unique-btn:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .copy-unique-btn {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background: rgba(59, 130, 246, 0.1);
+        cursor: pointer;
+        transition: all 200ms;
+        border: none;
+    }
+
+    .copy-unique-btn:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .copy-unique-btn svg {
+        width: 1rem;
+        height: 1rem;
+        color: var(--primary);
+    }
+
+    .unique-code-full {
+        display: none;
+        font-size: 0.75rem;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+        margin-top: 0.5rem;
+        color: var(--text-secondary);
+        word-break: break-all;
+    }
+
+    .unique-code-full.show {
+        display: block;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        position: relative;
+        overflow: hidden;
+        transition: all 200ms ease;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 1rem;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+    .btn-primary .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        animation: ripple 600ms ease-out;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 1px solid var(--card-border);
+        transition: all 200ms ease;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background: var(--divider);
+        border-color: var(--primary);
+    }
+
+    .loader {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        width: 1rem;
+        height: 1rem;
+        animation: spin 600ms linear infinite;
+        display: none;
+    }
+
+    .loader.show {
+        display: block;
+    }
+
+    .check-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        display: none;
+    }
+
+    .check-icon.show {
+        display: block;
+    }
+
+    .toast-container {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .toast {
+        animation: toastIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        background: var(--glass);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--card-border);
+        border-radius: 1rem;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-width: 280px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .toast.removing {
+        animation: toastOut 200ms ease forwards;
+    }
+
+    .toast-indicator {
+        width: 0.25rem;
+        height: 2rem;
+        border-radius: 9999px;
+    }
+
+    .toast span {
+        font-size: 0.875rem;
+        flex: 1;
+        color: var(--text);
+    }
+
+    button:focus-visible, a:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    @media (max-width: 640px) {
+        .glass-card {
+            padding: 1.5rem;
+        }
+        
+        .code-display {
+            font-size: 2.5rem;
+        }
+
+        .toast-container {
+            left: 1rem;
+            right: 1rem;
+        }
+
+        .toast {
+            min-width: auto;
+        }
+    }
+</style>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <button id="themeToggle" 
+                class="theme-toggle"
+                aria-label="Toggle dark/light mode">
+            <svg id="sunIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg id="moonIcon" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+        </button>
+
+        <div class="animate-slide-in">
+            <div class="glass-card gradient-border">
+                
+                <button id="backBtn" class="back-btn" aria-label="Go back" onclick="window.location.href='code.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Back</span>
+                </button>
+
+                <div class="alert-banner">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="alert-content">
+                        <p>
+                            Make sure this code is sent to 
+                            <span class="email">codexgame37@gmail.com</span> 
+                            for approval
+                        </p>
+                        <button id="copyEmailBtn" class="copy-email-btn" aria-label="Copy email address">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            Copy email
+                        </button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <label class="section-label">Verification Code</label>
+                    <div class="group code-section">
+                        <div class="code-display-wrapper">
+                            <div class="code-display">123456</div>
+                        </div>
+                        <button id="copyCodeBtn" class="copy-code-btn" aria-label="Copy code">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <label class="section-label">Possible Increase</label>
+                    <div class="increase-wrapper">
+                        <div class="badge-increase">
+                            <span id="increaseCounter">+0%</span>
+                        </div>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section" style="margin-bottom: 2rem;">
+                    <label class="section-label">Unique Code</label>
+                    <div class="unique-code-wrapper">
+                        <code id="uniqueCode">8d969eef6ecad3c2</code>
+                        <button id="toggleUniqueBtn" class="toggle-unique-btn">
+                            Show full
+                        </button>
+                        <button id="copyUniqueBtn" class="copy-unique-btn" aria-label="Copy unique code">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <code class="unique-code-full" id="uniqueCodeFull">8d969eef6ecad3c29ea1b565cea64ce6be764355</code>
+                </div>
+
+                <div class="button-group">
+                    <button id="getBtn" class="btn-primary" onclick="window.location.href='pending.html'">
+                        <span id="getBtnText">Get Approval</span>
+                        <div id="getBtnLoader" class="loader"></div>
+                        <svg id="getBtnCheck" class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </button>
+                    <button id="cancelBtn" class="btn-secondary" onclick="window.location.href='code.html'">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+<script>
+    // Theme Management
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+    const body = document.body;
+    
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+
+    function setTheme(theme) {
+        body.setAttribute('data-theme', theme);
+        if (theme === 'light') {
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+    }
+
+    // Counter Animation
+    function animateCounter() {
+        const counter = document.getElementById('increaseCounter');
+        let current = 0;
+        const target = 25;
+        const duration = 1500;
+        const increment = target / (duration / 16);
+        
+        const update = () => {
+            current += increment;
+            if (current < target) {
+                counter.textContent = `+${Math.floor(current)}%`;
+                requestAnimationFrame(update);
+            } else {
+                counter.textContent = `+${target}%`;
+            }
+        };
+        setTimeout(() => requestAnimationFrame(update), 300);
+    }
+    animateCounter();
+
+    // Toast System
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const colors = {
+            success: '#10B981',
+            error: '#EF4444',
+            info: '#3B82F6'
+        };
+        
+        toast.className = 'toast';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'polite');
+        toast.innerHTML = `
+            <div class="toast-indicator" style="background: ${colors[type]}"></div>
+            <span>${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('removing');
+            setTimeout(() => toast.remove(), 200);
+        }, 3000);
+    }
+
+    // Copy Functions
+    async function copyToClipboard(text, successMsg) {
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast(successMsg, 'success');
+        } catch (err) {
+            showToast('Failed to copy', 'error');
+        }
+    }
+
+    document.getElementById('copyEmailBtn').addEventListener('click', () => {
+        copyToClipboard('codexgame37@gmail.com', 'Email copied to clipboard');
+    });
+
+    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+        copyToClipboard('123456', 'Code copied to clipboard');
+    });
+
+    document.getElementById('copyUniqueBtn').addEventListener('click', () => {
+        const fullCode = '8d969eef6ecad3c29ea1b565cea64ce6be764355';
+        copyToClipboard(fullCode, 'Unique code copied');
+    });
+
+    // Unique Code Toggle
+    const toggleUniqueBtn = document.getElementById('toggleUniqueBtn');
+    const uniqueCodeFull = document.getElementById('uniqueCodeFull');
+    const uniqueCode = document.getElementById('uniqueCode');
+    let isFullShown = false;
+
+    toggleUniqueBtn.addEventListener('click', () => {
+        isFullShown = !isFullShown;
+        if (isFullShown) {
+            uniqueCodeFull.classList.add('show');
+            toggleUniqueBtn.textContent = 'Hide';
+            uniqueCode.textContent = '8d969eef6ecad3c29ea1b565cea64ce6be764355';
+        } else {
+            uniqueCodeFull.classList.remove('show');
+            toggleUniqueBtn.textContent = 'Show full';
+            uniqueCode.textContent = '8d969eef6ecad3c2';
+        }
+    });
+
+    // Ripple Effect
+    document.getElementById('getBtn').addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+        ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+
+    // Get Button Logic
+    const getBtn = document.getElementById('getBtn');
+    const getBtnText = document.getElementById('getBtnText');
+    const getBtnLoader = document.getElementById('getBtnLoader');
+    const getBtnCheck = document.getElementById('getBtnCheck');
+    let isSubmitted = false;
+
+    getBtn.addEventListener('click', async () => {
+        if (isSubmitted) return;
+        
+        getBtn.disabled = true;
+        getBtnText.textContent = 'Sending...';
+        getBtnLoader.classList.add('show');
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        getBtnLoader.classList.remove('show');
+        getBtnCheck.classList.add('show');
+        getBtnText.textContent = 'Sent';
+        getBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+        isSubmitted = true;
+        
+        showToast('Code sent for approval to codexgame37@gmail.com', 'success');
+        
+        setTimeout(() => {
+            getBtn.disabled = false;
+            getBtnText.textContent = 'Get Approval Again';
+            getBtnCheck.classList.remove('show');
+            getBtn.style.background = '';
+            isSubmitted = false;
+        }, 3000);
+    });
+
+    // Cancel Button
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+        showToast('Action cancelled', 'info');
+    });
+
+    // Back Button
+    document.getElementById('backBtn').addEventListener('click', () => {
+        showToast('Going back...', 'info');
+    });
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

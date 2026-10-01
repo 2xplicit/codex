@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Codex Exchange - Transaction Successful</title>
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  :root {
+    --emerald: #10B981;
+    --blue: #3B82F6;
+    --purple: #8B5CF6;
+    --amber: #F59E0B;
+    --bg-dark: #020617;
+    --card-dark: #0F172A;
+    --text-dark: #F1F5F9;
+    --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-system);
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .antialiased {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .touch-optimize {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .container {
+    max-width: 28rem;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 8rem;
+    min-height: 100dvh;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-top: 0.5rem;
+  }
+  
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .btn-icon:active {
+    transform: scale(0.95);
+  }
+  
+  .spacer {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .header-text {
+    text-align: center;
+  }
+  
+  .header-text p {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+  
+  .hero {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .check-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  
+  .check-glow {
+    position: absolute;
+    inset: 0;
+    background: rgba(16, 185, 129, 0.2);
+    border-radius: 50%;
+    animation: pulse-ring 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    filter: blur(1rem);
+  }
+  
+  @keyframes pulse-ring {
+    0% { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+  
+  .checkmark {
+    position: relative;
+    animation: scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+    transform: scale(0);
+  }
+  
+  @keyframes scaleBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+  
+  .checkmark-check {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+  }
+  
+  @keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, var(--emerald) 0%, var(--blue) 50%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+  
+  .fade-up {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+  
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .stagger-1 { animation-delay: 80ms; transform: translateY(16px); }
+  .stagger-2 { animation-delay: 160ms; transform: translateY(16px); }
+  .stagger-3 { animation-delay: 240ms; transform: translateY(16px); }
+  .stagger-4 { animation-delay: 320ms; transform: translateY(16px); }
+  .stagger-5 { animation-delay: 400ms; transform: translateY(16px); }
+  .stagger-6 { animation-delay: 480ms; transform: translateY(16px); }
+  .stagger-7 { animation-delay: 560ms; transform: translateY(16px); }
+  
+  .gradient-border {
+    position: relative;
+    border-radius: 2rem;
+    padding: 1px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2rem;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), var(--emerald), var(--blue), var(--purple), var(--amber), var(--emerald));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 4s linear infinite;
+  }
+  
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+  
+  .card {
+    border-radius: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .row {
+    margin-bottom: 1rem;
+  }
+  
+  .row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .label {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+  }
+  
+  .badge-verified {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+  }
+  
+  .badge-network {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8B5CF6;
+  }
+  
+  .address-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  .address-info {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+  
+  .address-info p {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875rem;
+    opacity: 0.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .copy-btn {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .copy-btn:active {
+    transform: scale(0.9);
+  }
+  
+  .copy-btn-sm {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+    margin: 1rem 0;
+  }
+  
+  .swap-box {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid;
+  }
+  
+  .swap-box-blue {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  .swap-box-emerald {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  
+  .coin-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .coin-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .coin-icon-blue {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+  }
+  
+  .coin-icon-emerald {
+    background: linear-gradient(135deg, #10B981, #059669);
+  }
+  
+  .coin-info {
+    flex: 1 1 0%;
+  }
+  
+  .coin-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .coin-amount-emerald {
+    color: #10B981;
+  }
+  
+  .code-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .meta-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .meta-label p {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+  
+  .meta-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: right;
+  }
+  
+  .meta-value-sm {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+  
+  .status-dot {
+    position: relative;
+    display: flex;
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+  
+  .status-ping {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #10B981;
+    opacity: 0.75;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  
+  @keyframes ping {
+    75%, 100% { transform: scale(2); opacity: 0; }
+  }
+  
+  .status-center {
+    position: relative;
+    border-radius: 50%;
+    height: 0.5rem;
+    width: 0.5rem;
+    background: #10B981;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-secondary {
+    flex: 1 1 0%;
+    height: 3rem;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .btn-secondary:active {
+    transform: scale(0.95);
+  }
+  
+  .btn-share {
+    color: var(--text-dark);
+  }
+  
+  .btn-share:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-explorer {
+    color: #3B82F6;
+  }
+  
+  .btn-explorer:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+  
+  .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem;
+    background: linear-gradient(to top, #000000, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  
+  .sticky-content {
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    height: 3rem;
+    border-radius: 1rem;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    box-shadow: 0 8px 16px -4px rgba(16, 185, 129, 0.4);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 8px -2px rgba(16, 185, 129, 0.6);
+  }
+  
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: ripple-effect 0.6s ease-out;
+  }
+  
+  @keyframes ripple-effect {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  
+  #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  .toast-container {
+    position: fixed;
+    bottom: 6rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    padding: 0 1.25rem;
+    z-index: 50;
+  }
+  
+  .toast {
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards, toastOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) 2s forwards;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: auto;
+  }
+  
+  @keyframes toastIn {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  @keyframes toastOut {
+    to { transform: translateY(100px); opacity: 0; }
+  }
+  
+  .focus-visible:focus-visible {
+    outline: 2px solid var(--emerald);
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body class="antialiased">
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container touch-optimize">
+  <header class="header">
+    <button id="backBtn" class="btn-icon glass focus-visible" aria-label="Go back" onclick="window.location.href='swap.html'">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18 L9 12 L15 6"/>
+      </svg>
+    </button>
+    <div class="header-text">
+      <p>Codex Exchange</p>
+    </div>
+    <div class="spacer"></div>
+  </header>
+
+  <div class="hero">
+    <div class="check-container">
+      <div class="check-glow"></div>
+      <svg class="checkmark" width="120" height="120" viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="checkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#10B981"/>
+            <stop offset="100%" style="stop-color:#3B82F6"/>
+          </linearGradient>
+        </defs>
+        <circle class="checkmark-circle" cx="60" cy="60" r="54" fill="none" stroke="url(#checkGradient)" stroke-width="6" stroke-linecap="round"/>
+        <path class="checkmark-check" d="M36 60 L52 76 L84 44" fill="none" stroke="url(#checkGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <h1 class="gradient-text fade-up">Successful</h1>
+    <p class="fade-up stagger-1">Coin has been successfully swapped</p>
+  </div>
+
+  <div class="gradient-border">
+    <div class="card glass">
+      <div class="row fade-up stagger-2">
+        <div class="row-header">
+          <p class="label">Sender</p>
+          <span class="badge badge-verified">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16 L5 12 L6 11 L9 14 L18 5 L19 6 Z"/>
+            </svg>
+            Verified
+          </span>
+        </div>
+        <div class="address-row">
+          <div class="address-info">
+            <p>Georgedawson@gmail.com</p>
+            <p class="mono">8d969eef6ecad3c2</p>
+          </div>
+          <button class="copy-btn focus-visible" data-copy="8d969eef6ecad3c2" aria-label="Copy sender address">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row fade-up stagger-3">
+        <p class="label" style="margin-bottom: 0.5rem;">Receiver</p>
+        <div class="address-row">
+          <div class="address-info">
+            <p>Georgedawson@gmail.com</p>
+            <p class="mono">8d969eef6ecad3c2</p>
+          </div>
+          <button class="copy-btn focus-visible" data-copy="8d969eef6ecad3c2" aria-label="Copy receiver address">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="swap-box swap-box-blue fade-up stagger-4">
+        <p class="label" style="margin-bottom: 0.75rem;">Swapped</p>
+        <div class="coin-row">
+          <div class="coin-icon coin-icon-blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M12 2 L2 7 V17 L12 22 L22 17 V7 Z M12 4 L19 8 L12 12 L5 8 Z M4 16 V9 L12 13 L20 9 V16 L12 20 Z"/>
+            </svg>
+          </div>
+          <div class="coin-info">
+            <p class="coin-amount"><span id="astroCounter">0</span> Astro coin</p>
+          </div>
+        </div>
+        <div class="code-list">
+          <div class="address-row">
+            <p class="mono">8d969eef6ecad3c2</p>
+            <button class="copy-btn copy-btn-sm focus-visible" data-copy="8d969eef6ecad3c2" aria-label="Copy wallet address">
+              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="address-row">
+            <p class="mono">1 2 3 4 5 6</p>
+            <button class="copy-btn copy-btn-sm focus-visible" data-copy="1 2 3 4 5 6" aria-label="Copy transaction code">
+              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="swap-box swap-box-emerald fade-up stagger-5">
+        <p class="label" style="margin-bottom: 0.75rem;">For</p>
+        <div class="coin-row">
+          <div class="coin-icon coin-icon-emerald">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M12 1 L3 5 V11 C3 16 7 21 12 23 C17 21 21 16 21 11 V5 Z M12 11 H19 C19 15 16 19 12 20 V12 H5 V6 L12 3 V11 Z"/>
+            </svg>
+          </div>
+          <div class="coin-info">
+            <p class="coin-amount coin-amount-emerald"><span id="bitroCounter">0</span> Bitro coin</p>
+          </div>
+        </div>
+        <div class="code-list">
+          <div class="address-row">
+            <p class="mono">8d969eef6ecad3c2</p>
+            <button class="copy-btn copy-btn-sm focus-visible" data-copy="8d969eef6ecad3c2" aria-label="Copy wallet address">
+              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="address-row">
+            <p class="mono">1 2 3 4 5 6</p>
+            <button class="copy-btn copy-btn-sm focus-visible" data-copy="1 2 3 4 5 6" aria-label="Copy transaction code">
+              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15 H4 A2 2 0 0 1 2 13 V4 A2 2 0 0 1 4 2 H13 A2 2 0 0 1 15 4 V5"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-list fade-up stagger-6">
+        <div class="meta-row">
+          <div class="meta-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 6 L12 12 L16 14"></path>
+            </svg>
+            <p>Time of Transaction</p>
+          </div>
+          <div>
+            <p class="meta-value">11:58 PM</p>
+            <p class="meta-value meta-value-sm" id="relativeTime">Just now</p>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <div class="meta-label">
+            <span class="status-dot">
+              <span class="status-ping"></span>
+              <span class="status-center"></span>
+            </span>
+            <p>Status</p>
+          </div>
+          <p class="meta-value" style="color: #10B981;">Completed</p>
+        </div>
+
+        <div class="meta-row">
+          <div class="meta-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;">
+              <path d="M21 16 V8 A2 2 0 0 0 20 6 L13 2 A2 2 0 0 0 11 2 L4 6 A2 2 0 0 0 3 8 V16 A2 2 0 0 0 4 18 L11 22 A2 2 0 0 0 13 22 L20 18 A2 2 0 0 0 21 16 Z"></path>
+              <path d="M3 7 L12 12 L21 7"></path>
+              <path d="M12 22 L12 12"></path>
+            </svg>
+            <p>Network</p>
+          </div>
+          <span class="badge badge-network">Codex Chain</span>
+        </div>
+
+        <div class="meta-row">
+          <div class="meta-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6;">
+              <path d="M12 1 L12 23"></path>
+              <path d="M17 5 H10 A4 4 0 0 0 10 12 H14 A4 4 0 0 1 14 19 H6"></path>
+            </svg>
+            <p>Gas Fee</p>
+          </div>
+          <p class="meta-value">$0.12</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions fade-up stagger-7">
+    <button id="shareBtn" class="btn-secondary btn-share glass focus-visible">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <path d="M9 13 L15 17"></path>
+        <path d="M15 7 L9 11"></path>
+      </svg>
+      <span>Share Receipt</span>
+    </button>
+    <button id="explorerBtn" class="btn-secondary btn-explorer focus-visible" style="background: transparent;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 13 V19 A2 2 0 0 1 16 21 H5 A2 2 0 0 1 3 19 V8 A2 2 0 0 1 5 6 H11"></path>
+        <path d="M15 3 L21 3 L21 9"></path>
+        <path d="M10 14 L21 3"></path>
+      </svg>
+      <span>View on Explorer</span>
+    </button>
+  </div>
+</div>
+
+<div class="sticky-footer">
+  <div class="sticky-content">
+    <button id="doneBtn" class="btn-primary focus-visible" onclick="window.location.href='home.html'">
+      <span>Done</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M9 16 L5 12 L6 11 L9 14 L18 5 L19 6 Z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+  // 1. Count up animation with null checks
+  function countUp(element, target, duration) {
+    if (!element) return;
+    duration = duration || 1500;
+    var start = 0;
+    var increment = target / (duration / 16);
+    var current = start;
+    
+    var timer = setInterval(function() {
+      current += increment;
+      if (current >= target) {
+        element.textContent = target.toLocaleString();
+        clearInterval(timer);
+      } else {
+        element.textContent = Math.floor(current).toLocaleString();
+      }
+    }, 16);
+  }
+  
+  setTimeout(function() {
+    countUp(document.getElementById('astroCounter'), 3580);
+    countUp(document.getElementById('bitroCounter'), 7421);
+  }, 800);
+
+  // 2. Copy to clipboard with toast and null checks
+  function showToast(message) {
+    var container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast glass';
+    toast.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #10B981;"><path d="M9 16 L5 12 L6 11 L9 14 L18 5 L19 6 Z"/></svg>' + message;
+    container.appendChild(toast);
+    setTimeout(function() { 
+      if (toast && toast.parentNode) {
+        toast.remove();
+      }
+    }, 2500);
+  }
+
+  var copyBtns = document.querySelectorAll('.copy-btn');
+  if (copyBtns && copyBtns.length > 0) {
+    copyBtns.forEach(function(btn) {
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          var text = btn.getAttribute('data-copy');
+          if (!text) return;
+          
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+              showToast('Copied to clipboard!');
+              var icon = btn.querySelector('.copy-icon');
+              if (icon) {
+                var originalHTML = icon.innerHTML;
+                icon.innerHTML = '<path d="M9 16 L5 12 L6 11 L9 14 L18 5 L19 6 Z"/>';
+                setTimeout(function() {
+                  if (icon) icon.innerHTML = originalHTML;
+                }, 2000);
+              }
+            }).catch(function() {
+              showToast('Failed to copy');
+            });
+          } else {
+            showToast('Copy not supported');
+          }
+        });
+      }
+    });
+  }
+
+  // 3. Confetti animation with null checks
+  var canvas = document.getElementById('confetti-canvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var colors = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B'];
+    
+    function resizeCanvas() {
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    function Particle(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 8 + 4;
+      this.speedX = Math.random() * 6 - 3;
+      this.speedY = Math.random() * -8 - 2;
+      this.speedRotation = Math.random() * 10 - 5;
+      this.rotation = Math.random() * 360;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.gravity = 0.3;
+      this.opacity = 1;
+    }
+    
+    Particle.prototype.update = function() {
+      this.speedY += this.gravity;
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.rotation += this.speedRotation;
+      this.opacity -= 0.008;
+    };
+    
+    Particle.prototype.draw = function() {
+      if (!ctx) return;
+      ctx.save();
+      ctx.globalAlpha = this.opacity;
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation * Math.PI / 180);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+      ctx.restore();
+    };
+    
+    function launchConfetti() {
+      var centerX = window.innerWidth / 2;
+      var centerY = window.innerHeight / 2 - 150;
+      for (var i = 0; i < 50; i++) {
+        particles.push(new Particle(centerX, centerY));
+      }
+    }
+    
+    function animateConfetti() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(function(p) {
+        return p.opacity > 0 && p.y < canvas.height;
+      });
+      particles.forEach(function(p) {
+        p.update();
+        p.draw();
+      });
+      if (particles.length > 0) {
+        requestAnimationFrame(animateConfetti);
+      }
+    }
+    
+    setTimeout(function() {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        launchConfetti();
+        animateConfetti();
+      }
+    }, 900);
+  }
+
+  // 4. Ripple effect with null checks
+  var rippleBtns = document.querySelectorAll('.btn-primary');
+  if (rippleBtns && rippleBtns.length > 0) {
+    rippleBtns.forEach(function(btn) {
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          var rect = this.getBoundingClientRect();
+          var ripple = document.createElement('span');
+          var size = Math.max(rect.width, rect.height);
+          var x = e.clientX - rect.left - size / 2;
+          var y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = x + 'px';
+          ripple.style.top = y + 'px';
+          ripple.classList.add('ripple');
+          
+          this.appendChild(ripple);
+          setTimeout(function() { 
+            if (ripple && ripple.parentNode) {
+              ripple.remove();
+            }
+          }, 600);
+        });
+      }
+    });
+  }
+
+  // 5. Live relative time with null checks
+  var txTime = new Date();
+  txTime.setHours(23, 58, 0);
+  
+  function updateRelativeTime() {
+    var el = document.getElementById('relativeTime');
+    if (!el) return;
+    
+    var now = new Date();
+    var diff = Math.floor((now - txTime) / 1000);
+    
+    if (diff < 60) {
+      el.textContent = 'Just now';
+    } else if (diff < 3600) {
+      el.textContent = Math.floor(diff / 60) + 'm ago';
+    } else if (diff < 86400) {
+      el.textContent = Math.floor(diff / 3600) + 'h ago';
+    } else {
+      el.textContent = Math.floor(diff / 86400) + 'd ago';
+    }
+  }
+  
+  updateRelativeTime();
+  setInterval(updateRelativeTime, 60000);
+
+  // 6. Button actions with null checks
+  var backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      showToast('Navigating back...');
+      window.history.back();
+    });
+  }
+
+  var doneBtn = document.getElementById('doneBtn');
+  if (doneBtn) {
+    doneBtn.addEventListener('click', function() {
+      showToast('Transaction complete!');
+    });
+  }
+
+  var shareBtn = document.getElementById('shareBtn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Codex Exchange Receipt',
+          text: 'Swapped 3,580 Astro for 7,421 Bitro successfully!',
+          url: window.location.href
+        }).catch(function(err) {
+          if (err.name !== 'AbortError') showToast('Share failed');
+        });
+      } else {
+        showToast('Share not supported');
+      }
+    });
+  }
+
+  var explorerBtn = document.getElementById('explorerBtn');
+  if (explorerBtn) {
+    explorerBtn.addEventListener('click', function() {
+      showToast('Opening explorer...');
+    });
+  }
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

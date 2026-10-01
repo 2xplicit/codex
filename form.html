@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Codex - Upload Coins Form</title>
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  :root {
+    --blue: #3B82F6;
+    --emerald: #10B981;
+    --red: #EF4444;
+    --purple: #8B5CF6;
+    --bg: #020617;
+    --card: #0F172A;
+    --card-light: #FFFFFF;
+    --bg-light: #F8FAFC;
+    --text: #F1F5F9;
+    --text-muted: #94A3B8;
+    --text-light: #0F172A;
+    --text-muted-light: #64748B;
+    --border: rgba(148, 163, 184, 0.1);
+    --border-light: rgba(15, 23, 42, 0.1);
+    --ring: rgba(59, 130, 246, 0.3);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --gap: 12px;
+    --pad: 20px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+
+  body.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+  }
+
+  .container {
+    max-width: 448px;
+    margin: 0 auto;
+    padding: 16px 16px calc(88px + env(safe-area-inset-bottom)) 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+  }
+
+  body.light .glass {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border-light);
+  }
+
+  .gradient-border {
+    position: relative;
+    border-radius: var(--radius-lg);
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), var(--blue), var(--purple), var(--emerald), var(--blue));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 8s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes rotate {
+    to { --angle: 360deg; }
+  }
+
+  .header-card {
+    padding: var(--pad);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    will-change: transform, opacity;
+    animation: fadeUp 0.5s cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  .form-heading {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  body.light .subtitle {
+    color: var(--text-muted-light);
+  }
+
+  .wallet-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+  }
+
+  .wallet-chip:active {
+    transform: scale(0.98);
+  }
+
+  .solana-logo {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .wallet-address {
+    font-family: 'SF Mono', 'Monaco', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .copy-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: all 0.2s;
+  }
+
+  .wallet-chip.copied .copy-icon {
+    opacity: 1;
+    color: var(--emerald);
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .section-badge {
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  .form-card {
+    padding: var(--pad);
+    border-radius: var(--radius-lg);
+    position: relative;
+    will-change: transform, opacity;
+    animation: fadeUp 0.4s cubic-bezier(.2,.8,.2,1) both;
+    touch-action: pan-y;
+  }
+
+  .form-card.removing {
+    animation: slideOutLeft 0.3s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideOutLeft {
+    to {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .card-index {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  body.light .card-index {
+    color: var(--text-muted-light);
+  }
+
+  .remove-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--red);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .remove-btn:active {
+    transform: scale(0.9);
+    background: rgba(239, 68, 68, 0.2);
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  body.light .label {
+    color: var(--text-light);
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 15px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: rgba(2, 6, 23, 0.4);
+    color: var(--text);
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  body.light .input {
+    background: rgba(248, 250, 252, 0.8);
+    border-color: var(--border-light);
+    color: var(--text-light);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  .input.valid {
+    border-color: var(--emerald);
+  }
+
+  .input.error {
+    border-color: var(--red);
+  }
+
+  .input-suffix {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .usd-preview {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    min-height: 18px;
+  }
+
+  body.light .usd-preview {
+    color: var(--text-muted-light);
+  }
+
+  .autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    border-radius: var(--radius-md);
+    background: var(--card);
+    border: 1px solid var(--border);
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  body.light .autocomplete-dropdown {
+    background: var(--card-light);
+    border-color: var(--border-light);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .autocomplete-dropdown.show {
+    display: block;
+    animation: fadeUp 0.2s ease;
+  }
+
+  .autocomplete-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .autocomplete-item:active {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .coin-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  .coin-name {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .coin-symbol {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  .add-btn {
+    width: 100%;
+    height: 48px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--emerald);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+
+  body.light .add-btn {
+    border-color: var(--border-light);
+  }
+
+  .add-btn:active {
+    transform: scale(0.95);
+    background: rgba(16, 185, 129, 0.05);
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.3);
+    transform: scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  .collapsible-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  body.light .collapsible-trigger {
+    border-color: var(--border-light);
+    color: var(--text-light);
+  }
+
+  .collapsible-trigger:active {
+    background: rgba(148, 163, 184, 0.05);
+  }
+
+  .chevron {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .collapsible-trigger.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .collapsible-content.open {
+    max-height: 3000px;
+  }
+
+  .skip-btn {
+    font-size: 14px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+    touch-action: manipulation;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .submit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom)) 16px;
+    background: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+
+  body.light .submit-bar {
+    background: rgba(248, 250, 252, 0.8);
+    border-top-color: var(--border-light);
+  }
+
+  .submit-bar-inner {
+    max-width: 448px;
+    margin: 0 auto;
+  }
+
+  .progress-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 48px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--blue);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    touch-action: manipulation;
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .submit-btn:not(:disabled):active {
+    transform: scale(0.98);
+    background: #2563EB;
+  }
+
+  .submit-btn.loading .btn-text {
+    display: none;
+  }
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+  }
+
+  .submit-btn.loading .spinner {
+    display: block;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    display: none;
+  }
+
+  .submit-btn.success {
+    background: var(--emerald);
+  }
+
+  .submit-btn.success .check-icon {
+    display: block;
+    animation: scaleCheck 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .submit-btn.success .btn-text {
+    display: block;
+  }
+
+  @keyframes scaleCheck {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+
+  body.light .toast {
+    background: var(--card-light);
+    border-color: var(--border-light);
+    color: var(--text-light);
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    transition: all 0.2s;
+  }
+
+  body.light .theme-toggle {
+    background: var(--card-light);
+    border-color: var(--border-light);
+    color: var(--text-light);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.9);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  @keyframes confettiFall {
+    to {
+      transform: translateY(100vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="5"/>
+    <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22"/>
+  </svg>
+</button>
+
+<div class="container">
+  <div class="header-card glass gradient-border">
+    <div>
+      <h1 class="form-heading">FORM</h1>
+      <p class="subtitle">Fill the following to upload your coins on Codex</p>
+    </div>
+    
+    <div class="wallet-chip" id="walletChip" role="button" tabindex="0" aria-label="Copy Solana wallet address">
+      <svg class="solana-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+        <path d="M2 17L12 22L22 17"/>
+        <path d="M2 12L12 17L22 12"/>
+      </svg>
+      <span class="wallet-address">For adding funds copy the codex Solana wallet address below</span>
+      <code style="font-size:12px;padding:4px 8px;background:rgba(59,130,246,0.2);border-radius:6px;" id="walletAddr">8d969eef6ecad3c2</code>
+      <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13"/>
+        <path d="M5 15H4V4H13V5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section" id="uploadSection">
+    <div class="section-header">
+      <h2 class="section-title">Upload Coins</h2>
+      <span class="section-badge" id="coinCount">0 coins</span>
+    </div>
+    <div id="uploadForms"></div>
+    <button class="add-btn" id="addUploadBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 5V19M5 12H19"/>
+      </svg>
+      Add another form column
+    </button>
+  </div>
+
+  <div class="section">
+    <button class="collapsible-trigger glass" id="excludedToggle">
+      <span>Excluded coins/funds</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9L12 15L18 9"/>
+      </svg>
+    </button>
+    <div class="collapsible-content" id="excludedContent">
+      <div id="excludedForms"></div>
+      <button class="add-btn" id="addExcludedBtn" style="margin-top:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5V19M5 12H19"/>
+        </svg>
+        Add excluded coin
+      </button>
+      <button class="skip-btn" id="skipExcluded">If any, fill the form but if not, skip</button>
+    </div>
+  </div>
+</div>
+
+<div class="submit-bar">
+  <div class="submit-bar-inner">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">0 of 0 fields complete</div>
+    <button class="submit-btn" id="submitBtn" disabled onclick="window.location.href='notice.html'">
+      <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <path d="M20 6L9 17L4 12"/>
+      </svg>
+      <span class="spinner"></span>
+      <span class="btn-text">Upload 0 coins</span>
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M20 6L9 17L4 12"/>
+  </svg>
+  <span id="toastText">Copied!</span>
+</div>
+
+<script>
+(function() {
+  const COINS = [
+    { name: 'Solana', symbol: 'SOL' },
+    { name: 'Bitcoin', symbol: 'BTC' },
+    { name: 'Ethereum', symbol: 'ETH' },
+    { name: 'USDC', symbol: 'USDC' },
+    { name: 'BONK', symbol: 'BONK' }
+  ];
+
+  let uploadFormCount = 0;
+  let excludedFormCount = 0;
+  let formData = { upload: [], excluded: [] };
+
+  const uploadForms = document.getElementById('uploadForms');
+  const excludedForms = document.getElementById('excludedForms');
+  const walletChip = document.getElementById('walletChip');
+  const walletAddr = document.getElementById('walletAddr');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  const submitBtn = document.getElementById('submitBtn');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const coinCount = document.getElementById('coinCount');
+  const themeToggle = document.getElementById('themeToggle');
+
+  const savedTheme = localStorage.getItem('codex-theme');
+  if (savedTheme === 'light') document.body.classList.add('light');
+  
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    localStorage.setItem('codex-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+  });
+
+  function showToast(msg) {
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  walletChip.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(walletAddr.textContent);
+      walletChip.classList.add('copied');
+      showToast('Copied!');
+      setTimeout(() => walletChip.classList.remove('copied'), 2000);
+    } catch (e) {
+      showToast('Failed to copy');
+    }
+  });
+
+  function createRipple(e, btn) {
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+    ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
+
+  function createFormCard(type, index) {
+    const card = document.createElement('div');
+    card.className = 'form-card glass';
+    card.style.animationDelay = `${index * 0.08}s`;
+    card.dataset.type = type;
+    card.dataset.index = index;
+
+    const isFirst = index === 0;
+    
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-index">${type === 'upload' ? 'Coin' : 'Excluded'} ${index + 1}</span>
+        ${!isFirst ? `<button class="remove-btn" aria-label="Remove"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6L18 18"/></svg></button>` : ''}
+      </div>
+      <div class="field">
+        <label class="label">Name of coin/Funds</label>
+        <div class="input-wrapper">
+          <input type="text" class="input coin-input" placeholder="Search coin..." autocomplete="off" aria-label="Coin name">
+          <div class="autocomplete-dropdown"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Initial amount of coins/funds</label>
+        <div class="input-wrapper">
+          <input type="number" class="input initial-input" placeholder="0.00" step="0.01" min="0" aria-label="Initial amount">
+          <span class="input-suffix">$</span>
+        </div>
+        <div class="usd-preview initial-preview"></div>
+      </div>
+      <div class="field">
+        <label class="label">Current amount of coins/funds</label>
+        <div class="input-wrapper">
+          <input type="number" class="input current-input" placeholder="0.00" step="0.01" min="0" aria-label="Current amount">
+          <span class="input-suffix">$</span>
+        </div>
+        <div class="usd-preview current-preview"></div>
+      </div>
+    `;
+
+    const coinInput = card.querySelector('.coin-input');
+    const initialInput = card.querySelector('.initial-input');
+    const currentInput = card.querySelector('.current-input');
+    const dropdown = card.querySelector('.autocomplete-dropdown');
+    const removeBtn = card.querySelector('.remove-btn');
+
+    coinInput.addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase();
+      if (!val) {
+        dropdown.classList.remove('show');
+        return;
+      }
+      const matches = COINS.filter(c => 
+        c.name.toLowerCase().includes(val) || c.symbol.toLowerCase().includes(val)
+      );
+      dropdown.innerHTML = matches.map(c => `
+        <div class="autocomplete-item" data-name="${c.name}" data-symbol="${c.symbol}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="coin-logo">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6V12L16 14"/>
+          </svg>
+          <span class="coin-name">${c.name}</span>
+          <span class="coin-symbol">${c.symbol}</span>
+        </div>
+      `).join('');
+      dropdown.classList.toggle('show', matches.length > 0);
+    });
+
+    dropdown.addEventListener('click', (e) => {
+      const item = e.target.closest('.autocomplete-item');
+      if (!item) return;
+      coinInput.value = item.dataset.name;
+      dropdown.classList.remove('show');
+      validateField(coinInput);
+      saveData();
+      checkDuplicates();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!card.contains(e.target)) dropdown.classList.remove('show');
+    });
+
+    initialInput.addEventListener('input', (e) => {
+      if (currentInput.value === '' || parseFloat(currentInput.value) === 0) {
+        currentInput.value = e.target.value;
+      }
+      updatePreview(initialInput, card.querySelector('.initial-preview'));
+      validateField(initialInput);
+      saveData();
+      updateProgress();
+    });
+
+    currentInput.addEventListener('input', () => {
+      updatePreview(currentInput, card.querySelector('.current-preview'));
+      validateField(currentInput);
+      saveData();
+      updateProgress();
+    });
+
+    coinInput.addEventListener('input', () => {
+      validateField(coinInput);
+      saveData();
+      checkDuplicates();
+      updateProgress();
+    });
+
+    coinInput.addEventListener('blur', () => validateField(coinInput));
+    initialInput.addEventListener('blur', () => validateField(initialInput));
+    currentInput.addEventListener('blur', () => validateField(currentInput));
+
+    if (removeBtn) {
+      removeBtn.addEventListener('click', () => {
+        card.classList.add('removing');
+        setTimeout(() => {
+          card.remove();
+          if (type === 'upload') uploadFormCount--;
+          else excludedFormCount--;
+          updateIndices();
+          saveData();
+          updateProgress();
+        }, 300);
+      });
+    }
+
+    [coinInput, initialInput, currentInput].forEach(input => {
+      input.addEventListener('focus', () => {
+        setTimeout(() => input.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+      });
+    });
+
+    return card;
+  }
+
+  function updatePreview(input, preview) {
+    const val = parseFloat(input.value) || 0;
+    preview.textContent = val > 0 ? `≈ $${(val * 1).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD` : '';
+  }
+
+  function validateField(input) {
+    const val = input.value.trim();
+    if (val === '') {
+      input.classList.remove('valid', 'error');
+      return false;
+    }
+    if (input.type === 'number' && parseFloat(val) < 0) {
+      input.classList.add('error');
+      input.classList.remove('valid');
+      return false;
+    }
+    input.classList.add('valid');
+    input.classList.remove('error');
+    return true;
+  }
+
+  function checkDuplicates() {
+    const names = [];
+    let hasDup = false;
+    document.querySelectorAll('.coin-input').forEach(input => {
+      const val = input.value.trim().toLowerCase();
+      if (val && names.includes(val)) {
+        hasDup = true;
+        input.classList.add('error');
+      } else if (val) {
+        names.push(val);
+      }
+    });
+    if (hasDup) showToast('Duplicate coin detected');
+  }
+
+  function updateIndices() {
+    document.querySelectorAll('#uploadForms .form-card').forEach((card, i) => {
+      card.querySelector('.card-index').textContent = `Coin ${i + 1}`;
+      card.dataset.index = i;
+    });
+    document.querySelectorAll('#excludedForms .form-card').forEach((card, i) => {
+      card.querySelector('.card-index').textContent = `Excluded ${i + 1}`;
+      card.dataset.index = i;
+    });
+  }
+
+  function updateProgress() {
+    const inputs = document.querySelectorAll('#uploadForms .input');
+    const filled = Array.from(inputs).filter(i => i.value.trim() !== '').length;
+    const total = inputs.length;
+    const percent = total > 0 ? (filled / total) * 100 : 0;
+    progressFill.style.width = percent + '%';
+    progressText.textContent = `${filled} of ${total} fields complete`;
+    
+    const validCoins = Array.from(document.querySelectorAll('#uploadForms .form-card')).filter(card => {
+      const coin = card.querySelector('.coin-input').value.trim();
+      const initial = card.querySelector('.initial-input').value.trim();
+      const current = card.querySelector('.current-input').value.trim();
+      return coin && initial && current;
+    }).length;
+    
+    coinCount.textContent = `${validCoins} coin${validCoins !== 1 ? 's' : ''}`;
+    submitBtn.querySelector('.btn-text').textContent = `Upload ${validCoins} coin${validCoins !== 1 ? 's' : ''}`;
+    submitBtn.disabled = validCoins === 0;
+  }
+
+  function saveData() {
+    formData.upload = Array.from(document.querySelectorAll('#uploadForms .form-card')).map(card => ({
+      coin: card.querySelector('.coin-input').value,
+      initial: card.querySelector('.initial-input').value,
+      current: card.querySelector('.current-input').value
+    }));
+    formData.excluded = Array.from(document.querySelectorAll('#excludedForms .form-card')).map(card => ({
+      coin: card.querySelector('.coin-input').value,
+      initial: card.querySelector('.initial-input').value,
+      current: card.querySelector('.current-input').value
+    }));
+    localStorage.setItem('codex-form-data', JSON.stringify(formData));
+  }
+
+  function loadData() {
+    const saved = localStorage.getItem('codex-form-data');
+    if (saved) {
+      try {
+        formData = JSON.parse(saved);
+        formData.upload.forEach(data => {
+          addForm('upload', data);
+        });
+        formData.excluded.forEach(data => {
+          if (!document.getElementById('excludedContent').classList.contains('open')) {
+            document.getElementById('excludedToggle').click();
+          }
+          addForm('excluded', data);
+        });
+      } catch (e) {}
+    }
+    if (uploadFormCount === 0) addForm('upload');
+  }
+
+  function addForm(type, data = null) {
+    const container = type === 'upload' ? uploadForms : excludedForms;
+    const index = type === 'upload' ? uploadFormCount : excludedFormCount;
+    const card = createFormCard(type, index);
+    container.appendChild(card);
+    
+    if (data) {
+      card.querySelector('.coin-input').value = data.coin || '';
+      card.querySelector('.initial-input').value = data.initial || '';
+      card.querySelector('.current-input').value = data.current || '';
+      updatePreview(card.querySelector('.initial-input'), card.querySelector('.initial-preview'));
+      updatePreview(card.querySelector('.current-input'), card.querySelector('.current-preview'));
+      if (data.coin) validateField(card.querySelector('.coin-input'));
+      if (data.initial) validateField(card.querySelector('.initial-input'));
+      if (data.current) validateField(card.querySelector('.current-input'));
+    }
+    
+    if (type === 'upload') uploadFormCount++;
+    else excludedFormCount++;
+    updateProgress();
+  }
+
+  document.getElementById('addUploadBtn').addEventListener('click', (e) => {
+    createRipple(e, e.currentTarget);
+    addForm('upload');
+    saveData();
+  });
+
+  document.getElementById('addExcludedBtn').addEventListener('click', (e) => {
+    createRipple(e, e.currentTarget);
+    addForm('excluded');
+    saveData();
+  });
+
+  document.getElementById('excludedToggle').addEventListener('click', function() {
+    this.classList.toggle('open');
+    document.getElementById('excludedContent').classList.toggle('open');
+  });
+
+  document.getElementById('skipExcluded').addEventListener('click', () => {
+    document.getElementById('excludedToggle').classList.remove('open');
+    document.getElementById('excludedContent').classList.remove('open');
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    await new Promise(r => setTimeout(r, 1500));
+    
+    for (let i = 0; i < 30; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.left = Math.random() * 100 + '%';
+      conf.style.background = ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B'][Math.floor(Math.random() * 4)];
+      conf.style.animation = `confettiFall ${1 + Math.random()}s ease-out forwards`;
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 2000);
+    }
+    
+    submitBtn.classList.remove('loading');
+    submitBtn.classList.add('success');
+    submitBtn.querySelector('.btn-text').textContent = 'Success!';
+    showToast('Coins uploaded successfully!');
+    
+    setTimeout(() => {
+      submitBtn.classList.remove('success');
+      updateProgress();
+    }, 2000);
+  });
+
+  loadData();
+  updateProgress();
+
+  document.addEventListener('paste', (e) => {
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (text.length === 16 && /^[a-f0-9]+$/i.test(text)) {
+      showToast('Wallet address detected');
+    }
+  });
+})();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

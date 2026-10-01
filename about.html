@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Exchange - About Us</title>
+<style>
+    :root {
+        --color-primary: #3B82F6;
+        --color-accent: #10B981;
+        --color-purple: #8B5CF6;
+        --color-warning: #F59E0B;
+        --bg-dark: #020617;
+        --bg-dark-card: #0F172A;
+        --bg-dark-border: #1E293B;
+        --bg-light: #F8FAFC;
+        --bg-light-card: #FFFFFF;
+        --bg-light-border: #E2E8F0;
+        --text-dark: #F1F5F9;
+        --text-light: #0F172A;
+    }
+
+    @property --gradient-angle {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-dark);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    body.light {
+        background: var(--bg-light);
+        color: var(--text-light);
+    }
+
+    .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .glass {
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .light .glass {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .gradient-border {
+        position: relative;
+        background: var(--bg-dark-card);
+        border-radius: 32px;
+    }
+
+    .light .gradient-border {
+        background: var(--bg-light-card);
+    }
+
+    .gradient-border::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 32px;
+        padding: 2px;
+        background: linear-gradient(var(--gradient-angle), var(--color-primary), var(--color-purple), var(--color-accent));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        animation: rotate-gradient 4s linear infinite;
+    }
+
+    @keyframes rotate-gradient {
+        to { --gradient-angle: 360deg; }
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-purple), var(--color-accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-gradient {
+        background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    }
+
+    .light .hero-gradient {
+        background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    }
+
+    .card-hover {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+        will-change: transform;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-16px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+        border-color: var(--color-primary);
+    }
+
+    @keyframes orbital-ring {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .orbital-ring {
+        animation: orbital-ring 8s linear infinite;
+    }
+
+    @keyframes scale-in {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .scale-in {
+        animation: scale-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes draw-path {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .draw-path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw-path 2s ease-out forwards;
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .countdown-digit {
+        display: inline-block;
+        perspective: 1000px;
+    }
+
+    .digit-inner {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .digit-inner.flip {
+        transform: rotateX(360deg);
+    }
+
+    .toast {
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .accordion-content.open {
+        max-height: 2000px;
+    }
+
+    .ripple {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(0);
+        animation: ripple-animation 0.6s ease-out;
+        pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    .tab-indicator {
+        position: absolute;
+        bottom: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-purple));
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 3px;
+    }
+
+    .hash-text {
+        font-family: system-ui, -apple-system, monospace;
+        letter-spacing: 0.1em;
+    }
+
+    .glitch {
+        animation: glitch 1s linear infinite;
+    }
+
+    @keyframes glitch {
+        2%, 64% { transform: translate(2px, 0) skew(0deg); }
+        4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+        62% { transform: translate(0, 0) skew(5deg); }
+    }
+
+    .drawer {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .drawer.open {
+        transform: translateX(0);
+    }
+
+    .overlay {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mono {
+        font-family: system-ui, -apple-system, monospace;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .btn-emerald {
+        background: var(--color-accent);
+        color: white;
+    }
+
+    .btn-emerald:hover {
+        background: #059669;
+        transform: translateY(-2px);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .sr-only:focus {
+        position: fixed;
+        width: auto;
+        height: auto;
+        padding: 1rem;
+        margin: 1rem;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 48px !important; }
+        .countdown-grid { font-size: 1.5rem !important; }
+    }
+</style>
+</head>
+<body>
+<a href="#main" class="sr-only">Skip to main content</a>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast glass" style="padding: 1rem 1.5rem; border-radius: 16px;">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 20L0 10L3 7L10 14L17 7L20 10L10 20Z" fill="#10B981"/>
+        </svg>
+        <span style="font-weight: 500;">Copied!</span>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 40;"></div>
+
+<!-- Side Drawer -->
+<nav id="drawer" class="drawer glass" style="position: fixed; top: 0; left: 0; height: 100%; width: 320px; max-width: 100%; z-index: 50; padding: 2rem;" aria-label="Main navigation">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #3B82F6; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">CX</div>
+            <span style="font-size: 1.25rem; font-weight: bold;">Codex</span>
+        </div>
+        <button id="close-drawer" style="padding: 0.5rem; border-radius: 8px; background: transparent; border: none; color: inherit; cursor: pointer;" aria-label="Close menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2"/>
+            </svg>
+        </button>
+    </div>
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+        <li><a href="active.html" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Active Users</a></li>
+        <li><a href="#features" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Features</a></li>
+        <li><a href="#technology" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Technology</a></li>
+        <li><a href="#economy" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Economy</a></li>
+        <li><a href="#terms" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Terms</a></li>
+        <li><a href="#support" style="display: block; padding: 0.75rem 1rem; border-radius: 12px; color: inherit; text-decoration: none;">Support</a></li>
+    </ul>
+</nav>
+
+<!-- Sticky Navbar -->
+<header class="glass" style="position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div class="container">
+        <div style="display: flex; align-items: center; justify-content: space-between; height: 80px;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button id="hamburger" class="ripple" style="padding: 0.75rem; border-radius: 12px; background: transparent; border: none; color: inherit; cursor: pointer;" aria-label="Open menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <button id="back-btn" class="ripple" style="padding: 0.75rem; border-radius: 12px; background: transparent; border: none; color: inherit; cursor: pointer;" aria-label="Go back" onclick="window.location.href='home.html'">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 19L8 12L15 5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="scale-in" style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="position: relative;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: #3B82F6; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.125rem;">CX</div>
+                    <div class="orbital-ring" style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(16, 185, 129, 0.3); border-top-color: #10B981;"></div>
+                </div>
+                <span style="font-size: 1.5rem; font-weight: bold;">Codex</span>
+            </div>
+
+            <button id="theme-toggle" class="ripple" style="padding: 0.75rem; border-radius: 12px; background: transparent; border: none; color: inherit; cursor: pointer;" aria-label="Toggle theme">
+                <svg id="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L12 5M12 19L12 21M5 12L3 12M21 12L19 12M18 6L16.5 7.5M7.5 16.5L6 18M18 18L16.5 16.5M7.5 7.5L6 6M17 12L12 7L7 12L12 17L17 12Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg id="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="hidden">
+                    <path d="M21 12L17 12L19 10L17 8L21 8L21 12ZM15 21L15 17L13 19L11 17L11 21L15 21ZM3 12L7 12L5 10L7 8L3 12ZM15 3L15 7L13 5L11 7L11 3L15 3Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main id="main">
+    <!-- Hero Section -->
+    <section class="hero-gradient" style="min-height: 100vh; display: flex; align-items: center; padding: 5rem 1.5rem;" id="about">
+        <div class="container" style="max-width: 1024px; width: 100%;">
+            <div class="reveal" style="text-align: center; margin-bottom: 4rem;">
+                <div style="display: inline-flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <svg class="draw-path" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="60" cy="60" r="54" stroke="#3B82F6" stroke-width="4"/>
+                        <circle cx="60" cy="60" r="46" stroke="#10B981" stroke-width="2"/>
+                        <text x="60" y="70" text-anchor="middle" fill="#3B82F6" font-size="32" font-weight="bold">CX</text>
+                    </svg>
+                </div>
+                <h1 class="gradient-text" style="font-size: 72px; line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem;">Codex</h1>
+                <p style="font-size: 2.5rem; font-weight: bold; margin-bottom: 2rem;">Where Offline Game Coins Become Real Value</p>
+            </div>
+
+            <div class="gradient-border reveal" style="padding: 2rem; margin-bottom: 3rem;">
+                <h2 style="font-size: 1.875rem; font-weight: bold; margin-bottom: 1.5rem;">About Us</h2>
+                <p style="font-size: 1.125rem; opacity: 0.9; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Codex is the bridge between offline gaming and the blockchain world. Our mission is to make offline game coins relevant again by transforming them into tradable digital assets. We believe that hard-earned achievements in games deserve recognition and value beyond the screen.
+                </p>
+                <p style="font-size: 1.125rem; opacity: 0.9; line-height: 1.8;">
+                    Through Codex, players can buy, sell, and swap their offline coins securely and transparently.
+                </p>
+            </div>
+
+            <div class="glass reveal" style="padding: 2rem; border-radius: 32px;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22L2 12L12 2L22 12L12 22Z" stroke="#10B981" stroke-width="2"/>
+                    </svg>
+                    <h3 style="font-size: 1.25rem; font-weight: bold;">Solana wallet</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem; border-radius: 16px; background: rgba(0,0,0,0.2);">
+                        <span class="mono" style="font-size: 0.875rem; word-break: break-all;">address: 8d969eef6ecad3c2</span>
+                        <button class="copy-btn btn btn-primary ripple" data-copy="8d969eef6ecad3c2" style="width: 100%;">Copy</button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem; border-radius: 16px; background: rgba(0,0,0,0.2);">
+                        <span class="mono" style="font-size: 0.875rem; word-break: break-all;">Codex wallet address: 8d969eef6ecad3c2</span>
+                        <button class="copy-btn btn btn-primary ripple" data-copy="8d969eef6ecad3c2" style="width: 100%;">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section style="padding: 5rem 1.5rem;" id="features">
+        <div class="container">
+            <h2 class="reveal" style="font-size: 2.5rem; font-weight: bold; text-align: center; margin-bottom: 4rem;">Platform Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+                <div class="glass card-hover reveal" style="padding: 2rem; border-radius: 32px; border: 2px solid transparent;">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="8" width="24" height="16" stroke="#3B82F6" stroke-width="2"/>
+                            <rect x="8" y="12" width="16" height="8" stroke="#3B82F6" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Game Coin Marketplace</h3>
+                    <p style="opacity: 0.9; line-height: 1.8;">
+                        A dedicated environment for buying, selling, and swapping offline game coins. Transform your gaming achievements into real digital assets.
+                    </p>
+                </div>
+
+                <div class="glass card-hover reveal" style="padding: 2rem; border-radius: 32px; border: 2px solid transparent;">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 28L4 16L16 4L28 16L16 28Z" stroke="#10B981" stroke-width="2"/>
+                            <path d="M16 20L10 14L16 8L22 14L16 20Z" fill="#10B981"/>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Powered by Solana</h3>
+                    <p style="opacity: 0.9; line-height: 1.8;">
+                        All transactions are settled via Solana and dollar, ensuring fast, cost-efficient, and transparent peer-to-peer exchange.
+                    </p>
+                </div>
+
+                <div class="glass card-hover reveal" style="padding: 2rem; border-radius: 32px; border: 2px solid transparent;">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(139, 92, 246, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 28L6 18L6 8L16 2L26 8L26 18L16 28Z" stroke="#8B5CF6" stroke-width="2"/>
+                            <path d="M12 16L14 18L20 12" stroke="#8B5CF6" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">SHA-256 Security</h3>
+                    <p style="opacity: 0.9; line-height: 1.8;">
+                        Every transaction is protected using SHA-256 cryptographic hashing, making exchanges tamper-proof and verifiable.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section style="padding: 5rem 1.5rem;" id="technology">
+        <div class="container" style="max-width: 1024px;">
+            <div class="reveal" style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">The Technology</h2>
+                <p class="gradient-text" style="font-size: 1.5rem; font-weight: bold;">Six-Digit Codes. Infinite Possibilities.</p>
+            </div>
+
+            <div class="gradient-border reveal" style="padding: 2rem; margin-bottom: 3rem;">
+                <p style="font-size: 1.125rem; opacity: 0.9; line-height: 1.8; margin-bottom: 1.5rem;">
+                    At the heart of Codex lies a unique six-digit alphanumeric code system. Each code is cryptographically generated using SHA-256, ensuring authenticity and security before it can be traded on the marketplace.
+                </p>
+                <div class="hash-text" style="text-align: center; padding: 1.5rem; border-radius: 16px; background: rgba(0,0,0,0.2); margin: 1.5rem 0;">
+                    <span id="hash-demo" style="color: #10B981; font-size: 1.125rem;">SHA256(Generating...)</span>
+                </div>
+                <div style="text-align: center;">
+                    <span class="glitch" style="font-size: 2.5rem; font-weight: bold; color: #8B5CF6;">CODE: A7F3B9</span>
+                </div>
+                <p style="font-size: 1.125rem; opacity: 0.9; line-height: 1.8; margin-top: 1.5rem;">
+                    These codes are not just identifiers — they represent your digital ownership. Every code is unique, tamper-proof, and traceable, forming the trust layer of Codex Exchange.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Economy Section -->
+    <section style="padding: 5rem 1.5rem;" id="economy">
+        <div class="container" style="max-width: 1024px;">
+            <div class="reveal" style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">The Economy</h2>
+                <p class="gradient-text" style="font-size: 1.5rem; font-weight: bold;">Buy. Sell. Swap. Freely.</p>
+            </div>
+
+            <div class="glass reveal" style="padding: 2rem; border-radius: 32px;">
+                <p style="font-size: 1.125rem; opacity: 0.9; line-height: 1.8; margin-bottom: 2rem;">
+                    Codex offers a simple and open exchange where the community defines value. Players can list their coins, browse live listings, or perform direct swaps with peers.
+                </p>
+
+                <!-- Tab Navigation -->
+                <div style="position: relative; margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 0.5rem; padding: 0.5rem; border-radius: 16px; background: rgba(0,0,0,0.2);">
+                        <button class="tab-btn btn ripple active" data-tab="buy" style="flex: 1; background: transparent;">Buy</button>
+                        <button class="tab-btn btn ripple" data-tab="sell" style="flex: 1; background: transparent;">Sell</button>
+                        <button class="tab-btn btn ripple" data-tab="swap" style="flex: 1; background: transparent;">Swap</button>
+                    </div>
+                    <div class="tab-indicator" id="tab-indicator"></div>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content" data-content="buy">
+                    <div style="padding: 1.5rem; border-radius: 16px; background: rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 6L9 6L3 12L9 18L3 18" stroke="#3B82F6" stroke-width="2"/>
+                                <path d="M21 6L15 6L21 12L15 18L21 18" stroke="#3B82F6" stroke-width="2"/>
+                            </svg>
+                            Buy Coins
+                        </h3>
+                        <p style="opacity: 0.9; line-height: 1.8;">
+                            Browse the live marketplace of offline game coins from a growing library of supported titles. Purchase with dollars instantly and receive codes directly to your wallet.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tab-content hidden" data-content="sell">
+                    <div style="padding: 1.5rem; border-radius: 16px; background: rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L12 22M12 2L6 8M12 2L18 8" stroke="#10B981" stroke-width="2"/>
+                            </svg>
+                            Sell Coins
+                        </h3>
+                        <p style="opacity: 0.9; line-height: 1.8;">
+                            List your offline coins at your desired price. Once bought, you receive SOL directly to your wallet. Set your own terms and trade on your schedule.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tab-content hidden" data-content="swap">
+                    <div style="padding: 1.5rem; border-radius: 16px; background: rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 6L17 6M7 6L3 10M7 6L11 10M17 18L7 18M17 18L21 14M17 18L13 14" stroke="#8B5CF6" stroke-width="2"/>
+                            </svg>
+                            Swap Coins
+                        </h3>
+                        <p style="opacity: 0.9; line-height: 1.8;">
+                            Exchange coins from one game for another seamlessly. Direct peer-to-peer swaps with no middlemen, creating a true player-driven economy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Countdown Section -->
+            <div class="reveal" style="margin-top: 4rem; text-align: center;">
+                <div class="gradient-border" style="display: inline-block; padding: 2rem;">
+                    <p style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 1rem;">Launch Countdown</p>
+                    <div class="countdown-grid" style="display: flex; align-items: center; justify-content: center; gap: 1rem; font-size: 2.5rem; font-weight: bold;">
+                        <div class="countdown-digit">
+                            <div class="digit-inner" id="days">
+                                <span>365</span>
+                            </div>
+                            <span style="font-size: 0.875rem; opacity: 0.7; display: block; margin-top: 0.5rem;">Days</span>
+                        </div>
+                        <span style="opacity: 0.5;">:</span>
+                        <div class="countdown-digit">
+                            <div class="digit-inner" id="hours">
+                                <span>23</span>
+                            </div>
+                            <span style="font-size: 0.875rem; opacity: 0.7; display: block; margin-top: 0.5rem;">Hours</span>
+                        </div>
+                        <span style="opacity: 0.5;">:</span>
+                        <div class="countdown-digit">
+                            <div class="digit-inner" id="minutes">
+                                <span>59</span>
+                            </div>
+                            <span style="font-size: 0.875rem; opacity: 0.7; display: block; margin-top: 0.5rem;">Mins</span>
+                        </div>
+                        <span style="opacity: 0.5;">:</span>
+                        <div class="countdown-digit">
+                            <div class="digit-inner" id="seconds">
+                                <span>10</span>
+                            </div>
+                            <span style="font-size: 0.875rem; opacity: 0.7; display: block; margin-top: 0.5rem;">Sec</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.875rem; opacity: 0.7; margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    We are currently in active development. This countdown represents our commitment to transparency and our target launch timeline.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms Section -->
+    <section style="padding: 5rem 1.5rem;" id="terms">
+        <div class="container" style="max-width: 1024px;">
+            <h2 class="reveal" style="font-size: 2.5rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">Terms and Conditions</h2>
+            
+            <div class="glass reveal" style="padding: 1.5rem; border-radius: 32px; margin-bottom: 2rem;">
+                <input type="text" id="terms-search" placeholder="Search terms..." style="width: 100%; padding: 1rem 1.5rem; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: inherit; font-family: inherit; font-size: 1rem;">
+            </div>
+
+            <div id="accordion-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Accordion items will be generated by JS -->
+            </div>
+
+            <!-- Policy Section -->
+            <div class="gradient-border reveal" style="padding: 2rem; margin-top: 3rem;">
+                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Policy Updates</h3>
+                <p style="opacity: 0.9; line-height: 1.8; margin-bottom: 1rem;">
+                    Codex Exchange reserves the right to update these terms and policies to reflect changes in our services, legal requirements, or business operations.
+                </p>
+                <p style="opacity: 0.9; line-height: 1.8;">
+                    Users will be notified of any material changes at least 14 days before they take effect. Continued use of the platform after changes constitutes acceptance of the updated terms.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section style="padding: 5rem 1.5rem;" id="support">
+        <div class="container" style="max-width: 1024px;">
+            <h2 class="reveal" style="font-size: 2.5rem; font-weight: bold; text-align: center; margin-bottom: 3rem;">Customer Support</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <div class="glass card-hover reveal" style="padding: 2rem; border-radius: 32px;">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="8" width="24" height="16" stroke="#3B82F6" stroke-width="2"/>
+                            <path d="M8 16L12 16M20 12L24 12M20 16L24 16M20 20L24 20" stroke="#3B82F6" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Codex Bot</h3>
+                    <p style="opacity: 0.9; margin-bottom: 1rem;">Get instant help from our AI assistant</p>
+                    <button class="btn btn-primary ripple" style="width: 100%;">Chat Now</button>
+                </div>
+
+                <div class="glass card-hover reveal" style="padding: 2rem; border-radius: 32px;">
+                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 10L24 10L24 22L8 10Z" stroke="#10B981" stroke-width="2"/>
+                            <path d="M8 10L16 16L24 10" stroke="#10B981" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Direct Line</h3>
+                    <p class="mono" style="font-size: 1.125rem; opacity: 0.9; margin-bottom: 1rem;">09056731449</p>
+                    <button class="copy-btn btn btn-emerald ripple" data-copy="09056731449" style="width: 100%;">Copy Number</button>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="reveal" style="text-align: center;">
+                <p style="font-size: 1.125rem; margin-bottom: 1.5rem;">Connect with us</p>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
+                    <a href="#" aria-label="X (Twitter)">
+                        <div class="glass" style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 6L6 18M6 6L18 18"/>
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="#" aria-label="Discord">
+                        <div class="glass" style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="9" cy="12" r="2"/>
+                                <circle cx="15" cy="12" r="2"/>
+                                <path d="M6 8L6 16M18 8L18 16"/>
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="#" aria-label="Telegram">
+                        <div class="glass" style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 2L2 12L8 14L10 20L14 16L22 2Z"/>
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="padding: 3rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 1rem;">Launch Date</p>
+                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; font-size: 1.5rem; font-weight: bold; color: #3B82F6;">
+                    <span id="footer-days">365</span> days
+                    <span id="footer-hours">23</span> hrs
+                    <span id="footer-mins">59</span> mins
+                    <span id="footer-secs">10</span> sec
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 0.875rem; opacity: 0.5;">
+                <p>&copy; 2026 Codex Exchange. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<!-- Floating Chat FAB -->
+<button id="chat-fab" class="ripple" style="position: fixed; bottom: 2rem; right: 2rem; width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #3B82F6, #8B5CF6); border: none; color: white; cursor: pointer; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.5); z-index: 30;" aria-label="Open chat">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+        <path d="M21 15L15 21L3 21L3 15L9 9L21 9L21 15Z" stroke="currentColor" stroke-width="2"/>
+        <circle cx="8" cy="13" r="1" fill="currentColor"/>
+        <circle cx="12" cy="13" r="1" fill="currentColor"/>
+        <circle cx="16" cy="13" r="1" fill="currentColor"/>
+    </svg>
+</button>
+
+<!-- Chat Modal -->
+<div id="chat-modal" class="glass hidden" style="position: fixed; bottom: 7rem; right: 2rem; width: 384px; max-width: calc(100vw - 4rem); border-radius: 32px; padding: 1.5rem; z-index: 40;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.25rem; font-weight: bold;">Codex Support</h3>
+        <button id="close-chat" style="padding: 0.5rem; border-radius: 8px; background: transparent; border: none; color: inherit; cursor: pointer;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2"/>
+            </svg>
+        </button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn btn-primary ripple" style="text-align: left; padding: 1rem;">
+            <div style="font-weight: bold; margin-bottom: 0.25rem;">Chat with Codex Bot</div>
+            <div style="font-size: 0.875rem; opacity: 0.8;">Get instant AI-powered help</div>
+        </button>
+        <button class="copy-btn btn ripple" data-copy="09056731449" style="text-align: left; padding: 1rem; background: rgba(255,255,255,0.1);">
+            <div style="font-weight: bold; margin-bottom: 0.25rem;">Call Direct Line</div>
+            <div class="mono" style="font-size: 0.875rem; opacity: 0.7;">09056731449</div>
+        </button>
+    </div>
+</div>
+
+<script>
+    // Safe element getter with null check
+    function safeGet(id) {
+        return document.getElementById(id);
+    }
+
+    function safeQuery(selector) {
+        return document.querySelector(selector);
+    }
+
+    function safeQueryAll(selector) {
+        return document.querySelectorAll(selector);
+    }
+
+    // Theme Management
+    const body = document.body;
+    const themeToggle = safeGet('theme-toggle');
+    const sunIcon = safeGet('sun-icon');
+    const moonIcon = safeGet('moon-icon');
+    
+    if (themeToggle && body && sunIcon && moonIcon) {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        themeToggle.addEventListener('click', (e) => {
+            body.classList.toggle('light');
+            const isLight = body.classList.contains('light');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            sunIcon.classList.toggle('hidden');
+            moonIcon.classList.toggle('hidden');
+            createRipple(themeToggle, e);
+        });
+    }
+
+    // Drawer Menu
+    const hamburger = safeGet('hamburger');
+    const closeDrawer = safeGet('close-drawer');
+    const drawer = safeGet('drawer');
+    const overlay = safeGet('overlay');
+
+    const closeMenu = () => {
+        if (drawer) drawer.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
+    };
+
+    if (hamburger && drawer && overlay) {
+        hamburger.addEventListener('click', (e) => {
+            drawer.classList.add('open');
+            overlay.classList.add('show');
+            createRipple(hamburger, e);
+        });
+    }
+
+    if (closeDrawer) {
+        closeDrawer.addEventListener('click', closeMenu);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeMenu);
+    }
+
+    if (drawer) {
+        const drawerLinks = drawer.querySelectorAll('a');
+        if (drawerLinks.length > 0) {
+            drawerLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        }
+    }
+
+    // Back Button
+    const backBtn = safeGet('back-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
+            window.history.back();
+            createRipple(e.target.closest('button'), e);
+        });
+    }
+
+    // Toast & Clipboard
+    const toast = safeGet('toast');
+    let toastTimeout;
+
+    function showToast() {
+        if (!toast) return;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000);
+    }
+
+    const copyBtns = safeQueryAll('.copy-btn');
+    if (copyBtns.length > 0) {
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const text = btn.dataset.copy;
+                if (!text) return;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showToast();
+                    btn.style.transform = 'scale(1.05)';
+                    setTimeout(() => btn.style.transform = 'scale(1)', 200);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                }
+                createRipple(btn, e);
+            });
+        });
+    }
+
+    // Countdown Timer
+    let totalSeconds = 365 * 24 * 60 * 60 + 23 * 60 * 60 + 59 * 60 + 10;
+    
+    function updateCountdown() {
+        totalSeconds--;
+        if (totalSeconds < 0) totalSeconds = 0;
+
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const units = ['days', 'hours', 'minutes', 'seconds'];
+        const values = [days, hours, minutes, seconds];
+
+        units.forEach((unit, i) => {
+            const el = safeGet(unit);
+            if (!el) return;
+            const inner = el.querySelector('.digit-inner');
+            if (!inner) return;
+            const span = inner.querySelector('span');
+            if (!span) return;
+            const newVal = String(values[i]).padStart(unit === 'days' ? 3 : 2, '0');
+            if (span.textContent !== newVal) {
+                inner.classList.add('flip');
+                setTimeout(() => {
+                    span.textContent = newVal;
+                    inner.classList.remove('flip');
+                }, 300);
+            }
+        });
+
+        // Footer countdown
+        const footerDays = safeGet('footer-days');
+        const footerHours = safeGet('footer-hours');
+        const footerMins = safeGet('footer-mins');
+        const footerSecs = safeGet('footer-secs');
+        
+        if (footerDays) footerDays.textContent = days;
+        if (footerHours) footerHours.textContent = hours;
+        if (footerMins) footerMins.textContent = minutes;
+        if (footerSecs) footerSecs.textContent = seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // SHA-256 Hash Animation
+    const hashDemo = safeGet('hash-demo');
+    if (hashDemo) {
+        const chars = '0123456789abcdef';
+        setInterval(() => {
+            let hash = '';
+            for (let i = 0; i < 64; i++) {
+                hash += chars[Math.floor(Math.random() * chars.length)];
+            }
+            hashDemo.textContent = `SHA256(${hash.substring(0, 8)}...)`;
+        }, 100);
+    }
+
+    // Tabs
+    const tabBtns = safeQueryAll('.tab-btn');
+    const tabContents = safeQueryAll('.tab-content');
+    const tabIndicator = safeGet('tab-indicator');
+
+    function setActiveTab(tab) {
+        tabBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.background = 'transparent';
+        });
+        
+        tabContents.forEach(content => content.classList.add('hidden'));
+        
+        const activeBtn = safeQuery(`[data-tab="${tab}"]`);
+        const activeContent = safeQuery(`[data-content="${tab}"]`);
+        
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.style.background = '#3B82F6';
+        }
+        
+        if (activeContent) {
+            activeContent.classList.remove('hidden');
+        }
+        
+        if (activeBtn && tabIndicator && activeBtn.parentElement) {
+            const btnRect = activeBtn.getBoundingClientRect();
+            const parentRect = activeBtn.parentElement.getBoundingClientRect();
+            tabIndicator.style.width = `${btnRect.width}px`;
+            tabIndicator.style.left = `${btnRect.left - parentRect.left}px`;
+        }
+    }
+
+    if (tabBtns.length > 0) {
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const tab = btn.dataset.tab;
+                if (tab) setActiveTab(tab);
+                createRipple(btn, e);
+            });
+        });
+        setActiveTab('buy');
+    }
+
+    // Accordion
+    const termsData = [
+        { title: '1. Introduction', content: 'Welcome to Codex Exchange. By accessing our platform, you agree to be bound by these terms and conditions. Codex provides a decentralized marketplace for offline game coins powered by Solana blockchain technology.' },
+        { title: '2. Eligibility', content: 'You must be at least 18 years old and legally capable of entering into binding contracts to use Codex Exchange. You represent that you are not prohibited from using blockchain services in your jurisdiction.' },
+        { title: '3. Codex Overview', content: 'Codex is a platform that bridges offline gaming achievements with blockchain technology, transforming game coins into tradable digital assets through our proprietary six-digit code system.' },
+        { title: '4. Codex Code System', content: 'Each tradable asset on Codex is represented by a unique six-digit alphanumeric code cryptographically generated using SHA-256. These codes represent digital ownership and are tamper-proof and traceable.' },
+        { title: '5. Transactions on Codex', content: 'All transactions on Codex are settled on the Solana blockchain. Transactions are irreversible once confirmed. Users are responsible for verifying transaction details before submission.' },
+        { title: '6. Buying and Selling Coins', content: 'Users can list coins at their desired price. Buyers purchase using supported payment methods. Upon successful payment, the code is transferred to the buyer and SOL to the seller.' },
+        { title: '7. Swapping Coins', content: 'Direct peer-to-peer swaps allow users to exchange coins from different games without intermediaries. Both parties must confirm the swap before execution.' },
+        { title: '8. Fees and Payments', content: 'Codex charges a small transaction fee on completed trades. Fees are displayed before transaction confirmation. Gas fees for blockchain transactions apply separately.' },
+        { title: '9. Security', content: 'Codex employs SHA-256 cryptographic hashing and industry-standard security practices. Users are responsible for securing their wallet credentials. Never share private keys or seed phrases.' },
+        { title: '10. Prohibited Conduct', content: 'Users may not engage in market manipulation, fraud, money laundering, or use Codex for illegal activities. Violation may result in account suspension and legal action.' },
+        { title: '11. Disclaimer', content: 'Codex is provided "as is" without warranties. Digital asset values are volatile. Users trade at their own risk. We do not guarantee profits or asset value retention.' },
+        { title: '12. Limitations of Liability', content: 'Codex is not liable for indirect, incidental, or consequential damages arising from platform use, including loss of profits, data, or digital assets.' },
+        { title: '13. Intellectual Property', content: 'All Codex branding, technology, and content are proprietary. Users retain ownership of their game coins but grant Codex license to display listings.' },
+        { title: '14. Termination', content: 'We may suspend or terminate accounts that violate these terms. Users may close their accounts at any time, subject to completing pending transactions.' },
+        { title: '15. Governing Law', content: 'These terms are governed by applicable international blockchain and digital asset regulations. Disputes will be resolved through binding arbitration.' },
+        { title: '16. Changes to These Terms', content: 'Codex may update these terms periodically. Material changes will be communicated with 14 days notice. Continued use constitutes acceptance.' },
+        { title: '17. Contact Us', content: 'For questions about these terms, contact our support team via chat or direct line at 09056731449. We respond within 24 hours during business days.' }
+    ];
+
+    const accordionContainer = safeGet('accordion-container');
+    if (accordionContainer) {
+        termsData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'glass reveal accordion-item';
+            div.style.borderRadius = '16px';
+            div.style.overflow = 'hidden';
+            div.innerHTML = `
+                <button class="accordion-header" style="width: 100%; padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; text-align: left; background: transparent; border: none; color: inherit; cursor: pointer; font-family: inherit; font-size: 1rem;" aria-expanded="false">
+                    <span style="font-weight: 500;">${item.title}</span>
+                    <svg class="chevron" style="transition: transform 0.3s;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="accordion-content">
+                    <div style="padding: 0 1.5rem 1rem; opacity: 0.9; line-height: 1.8;">
+                        ${item.content}
+                    </div>
+                </div>
+            `;
+            accordionContainer.appendChild(div);
+        });
+
+        const accordionHeaders = accordionContainer.querySelectorAll('.accordion-header');
+        if (accordionHeaders.length > 0) {
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const chevron = header.querySelector('.chevron');
+                    if (!content || !chevron) return;
+                    
+                    const isOpen = content.classList.contains('open');
+                    content.classList.toggle('open');
+                    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                    header.setAttribute('aria-expanded', !isOpen);
+                });
+            });
+        }
+    }
+
+    // Search filter
+    const searchInput = safeGet('terms-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const items = safeQueryAll('.accordion-item');
+            if (items.length > 0) {
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(query) ? 'block' : 'none';
+                });
+            }
+        });
+    }
+
+    // Chat FAB & Modal
+    const chatFab = safeGet('chat-fab');
+    const chatModal = safeGet('chat-modal');
+    const closeChat = safeGet('close-chat');
+
+    if (chatFab && chatModal) {
+        chatFab.addEventListener('click', (e) => {
+            chatModal.classList.toggle('hidden');
+            createRipple(chatFab, e);
+        });
+    }
+
+    if (closeChat && chatModal) {
+        closeChat.addEventListener('click', () => {
+            chatModal.classList.add('hidden');
+        });
+    }
+
+    // Scroll Reveal
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('active');
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+
+    const revealElements = safeQueryAll('.reveal');
+    if (revealElements.length > 0) {
+        revealElements.forEach(el => observer.observe(el));
+    }
+
+    // Ripple Effect
+    function createRipple(element, event) {
+        if (!element || !event) return;
+        const ripple = document.createElement('span');
+        const rect = element.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple-effect');
+
+        element.appendChild(ripple);
+        setTimeout(() => {
+            if (ripple && ripple.parentNode) {
+                ripple.remove();
+            }
+        }, 600);
+    }
+
+    const rippleElements = safeQueryAll('.ripple');
+    if (rippleElements.length > 0) {
+        rippleElements.forEach(el => {
+            el.addEventListener('click', (e) => createRipple(el, e));
+        });
+    }
+
+    // Performance: Pause animations when tab not visible
+    document.addEventListener('visibilitychange', () => {
+        const animatedElements = safeQueryAll('[style*="animation"]');
+        if (animatedElements.length > 0) {
+            animatedElements.forEach(el => {
+                el.style.animationPlayState = document.hidden ? 'paused' : 'running';
+            });
+        }
+    });
+
+    // Add hover effect to drawer links
+    if (drawer) {
+        const drawerLinks = drawer.querySelectorAll('a');
+        if (drawerLinks.length > 0) {
+            drawerLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.background = 'rgba(255,255,255,0.1)';
+                });
+                link.addEventListener('mouseleave', () => {
+                    link.style.background = 'transparent';
+                });
+            });
+        }
+    }
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>
